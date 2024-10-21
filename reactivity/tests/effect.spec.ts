@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { reactive } from "../reactive";
 import { effect } from "../effect";
 import { L } from "vitest/dist/chunks/reporters.C4ZHgdxQ";
@@ -35,12 +35,12 @@ import { L } from "vitest/dist/chunks/reporters.C4ZHgdxQ";
   it('scheduler', () => {
     let dummy;
     let run: any;
-    const scheduler = () => {
+    const scheduler = vi.fn(() => {
       run = runner;
-    }
+    });
     const obj = reactive({ foo: 1 });
     const runner = effect(() =>{
-      dummy = obj.foo;
+        dummy = obj.foo;
       },
       { scheduler }
     );
