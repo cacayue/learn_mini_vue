@@ -7,15 +7,17 @@ class ReactiveEffect {
 
   run(){
     activeEffect = this;
-    this._fn();
+    return this._fn();
   }
 }
 
 let activeEffect: ReactiveEffect;
-export function effect(fn: Function) {
+export function effect(fn: Function): Function {
   const reactiveEffect = new ReactiveEffect(fn);
 
   reactiveEffect.run();
+
+  return reactiveEffect.run.bind(reactiveEffect);
 }
 
 let targetMap = new Map();
