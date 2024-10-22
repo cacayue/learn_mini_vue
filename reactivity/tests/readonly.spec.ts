@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { reactive, readonly } from "../reactive";
+import { isReadonly, reactive, readonly } from "../reactive";
 import { effect, stop } from "../effect";
 
  describe("readonly", () => {
@@ -26,5 +26,12 @@ import { effect, stop } from "../effect";
 
     user.age = 11;
     expect(console.warn).toBeCalled();
-  })
+  });
+
+  it('isReadOnly', () => {
+    const user = { age: 10 };
+    const observaed = readonly(user);
+    expect(isReadonly(user)).toBe(false);
+    expect(isReadonly(observaed)).toBe(true);
+  });
  })

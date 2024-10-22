@@ -17,7 +17,7 @@ export function isReactive(value: any): boolean{
   return !!value[isReactiveFlags.IS_REACTIVE];
 }
 
-export function isReadonly(value: any): boolean{
+export function isReadonly(value: any): boolean {
   return !!value[isReactiveFlags.IS_READONLY];
 }
 
