@@ -1,5 +1,6 @@
 type EffectOption = {
-  scheduler: () => void;
+  scheduler?: () => void;
+  onstop?: () => void;
 }
 
 class ReactiveEffect {
@@ -21,6 +22,9 @@ class ReactiveEffect {
   }
 
   stop() {
+    if (this.Option && this.Option?.onstop) {
+      this.Option.onstop();
+    }
     this.deps?.forEach(dep => {
       dep.delete(this);
     });
@@ -65,8 +69,8 @@ export function trigger(target: any, key: string | symbol){
   const dep = targetMap.get(target)?.get(key);
   if (dep) {
     for (const effect of dep) {
-      if (effect.Option) {
-        effect.Option?.scheduler();
+      if (effect.Option &&  effect.Option?.scheduler) {
+        effect.Option.scheduler();
       }else{
         effect.run();
       }
