@@ -33,7 +33,8 @@ const mutableHandler = {
 
 const readonlyHandler = {
   readonlyGet,
-  set() {
+  set(target: any, key: any) {
+    console.warn(`${target} is readOnly,${key} can not be set.`)
     return true;
   }
 }

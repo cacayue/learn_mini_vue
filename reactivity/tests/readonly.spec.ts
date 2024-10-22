@@ -17,4 +17,14 @@ import { effect, stop } from "../effect";
     user.age++;
     expect(nextAge).toBe(11);
   });
+  it('warn then call set', () => {
+    console.warn = vi.fn()
+
+    const user = readonly({
+      age: 10
+    });
+
+    user.age = 11;
+    expect(console.warn).toBeCalled();
+  })
  })
