@@ -28,6 +28,12 @@ describe('ref', () => {
 
   it('nested ref', () => {
     const obj = ref({ foo: 1 });
-    expect(obj.value.foo).toBe(1);
+    let dummy;
+    effect(() => {
+      dummy = obj.value.foo;
+    });
+    expect(dummy).toBe(1);
+    obj.value.foo = 2;
+    expect(dummy).toBe(2);
   });
 });
