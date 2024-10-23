@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { isReadonly, readonly } from '../reactive';
+import { isProxy, isReadonly, readonly } from '../reactive';
 import { effect } from '../effect';
 
 describe('readonly', () => {
@@ -33,6 +33,7 @@ describe('readonly', () => {
     const observaed = readonly(user);
     expect(isReadonly(user)).toBe(false);
     expect(isReadonly(observaed)).toBe(true);
+    expect(isProxy(observaed)).toBe(true);
   });
 
   it('nested readonly', () => {

@@ -1,7 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isReactive, isReadonly, reactive, readonly } from '../reactive';
-import { array } from '../../../vue_sourcecode/vite/playground/config/packages/siblings/foo';
-import { exec } from 'node:child_process';
+import { isProxy, isReactive, isReadonly, reactive, readonly } from '../reactive';
 
 describe('reactive-test', () => {
   it('set get', () => {
@@ -15,6 +13,7 @@ describe('reactive-test', () => {
     const observaed = reactive(user);
     expect(isReactive(observaed)).toBe(true);
     expect(isReactive(user)).toBe(false);
+    expect(isProxy(observaed)).toBe(true);
   });
 
   it('nested reactive', () => {
