@@ -21,8 +21,13 @@ describe('ref', () => {
     expect(calls).toBe(2);
     expect(dummy).toBe(2);
     // same value should not trigger;
-    // a.value = 2;
-    // expect(calls).toBe(2);
-    // expect(dummy).toBe(2);
+    a.value = 2;
+    expect(calls).toBe(2);
+    expect(dummy).toBe(2);
+  });
+
+  it('nested ref', () => {
+    const obj = ref({ foo: 1 });
+    expect(obj.value.foo).toBe(1);
   });
 });

@@ -1,4 +1,4 @@
-import { triggerEffects } from '../../vue_sourcecode/mini-vue/packages/reactivity/src/effect';
+import { triggerEffects, isTracking } from '../../vue_sourcecode/mini-vue/packages/reactivity/src/effect';
 type EffectOption = {
   scheduler?: () => void;
   onstop?: () => void;
@@ -74,8 +74,12 @@ export function track(target: any, key: string | symbol) {
   trackEffects(dep);
 }
 
+function isTracking() {
+  return shouldTrack && activeEffect !== undefined;
+}
+
 export function trackEffects(dep: Set<any>) {
-  if (activeEffect && shouldTrack) {
+  if (isTracking()) {
     dep.add(activeEffect);
     activeEffect.deps?.push(dep);
   }

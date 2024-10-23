@@ -1,4 +1,4 @@
-import { isObject } from '../Shared';
+import { hasChanged, isObject } from '../Shared';
 import { trackEffects, triggerEffects } from './effect';
 
 class RefImpl {
@@ -15,8 +15,10 @@ class RefImpl {
   }
 
   public set value(newValue: any) {
-    this._value = newValue;
-    triggerEffects(this.dep);
+    if (hasChanged(this._value, newValue)) {
+      this._value = newValue;
+      triggerEffects(this.dep);
+    }
   }
 }
 
