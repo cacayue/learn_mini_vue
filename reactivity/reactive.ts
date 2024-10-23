@@ -1,8 +1,8 @@
-import { mutableHandler, readonlyHandler } from "./baseHandler";
+import { mutableHandler, readonlyHandler, shadowReadonlyHandler } from './baseHandler';
 
 export enum isReactiveFlags {
   IS_REACTIVE = '__v_isReactive',
-  IS_READONLY = '__v_isReadonly',
+  IS_READONLY = '__v_isReadonly'
 }
 
 export function reactive(raw: any) {
@@ -13,7 +13,11 @@ export function readonly(raw: any) {
   return createActiveProxy(raw, readonlyHandler);
 }
 
-export function isReactive(value: any): boolean{
+export function shadowReadonly(raw: any) {
+  return createActiveProxy(raw, shadowReadonlyHandler);
+}
+
+export function isReactive(value: any): boolean {
   return !!value[isReactiveFlags.IS_REACTIVE];
 }
 

@@ -1,12 +1,13 @@
 import { track, trigger } from '../reactivity/effect';
-import { isObject } from '../Shared';
+import { extend, isObject } from '../Shared';
 import { isReactiveFlags, reactive, readonly } from './reactive';
 
 const get = CreateGetter();
 const set = CreateSetter();
 const readonlyGet = CreateGetter(true);
+const shadowReadonlyGet = CreateGetter(true, true);
 
-function CreateGetter(isReadonly: boolean = false) {
+function CreateGetter(isReadonly: boolean = false, isShadow: boolean = false) {
   return function get(target: any, key: any) {
     if (key === isReactiveFlags.IS_REACTIVE) {
       return !isReadonly;
@@ -16,12 +17,8 @@ function CreateGetter(isReadonly: boolean = false) {
 
     const res = Reflect.get(target, key);
 
-    if (!isReadonly && isObject(res)) {
-      return reactive(res);
-    }
-
-    if (isReadonly && isObject(res)) {
-      return readonly(res);
+    if (isObject(res) && !isShadow) {
+      return isReadonly ? readonly(res) : reactive(res);
     }
 
     if (!isReadonly) {
@@ -56,4 +53,8 @@ const readonlyHandler = {
   }
 };
 
-export { mutableHandler, readonlyHandler };
+const shadowReadonlyHandler = extend({}, readonlyHandler, {
+  get: shadowReadonlyGet
+});
+
+export { mutableHandler, readonlyHandler, shadowReadonlyHandler };
