@@ -64,25 +64,21 @@ import { effect, stop } from "../effect";
     expect(dummy).toBe(2);
     stop(runner);
     obj.prop = 3;
+    // obj.prop = obj.prop + 1;
+    // obj.prop++;
     expect(dummy).toBe(2);
     runner();
     expect(dummy).toBe(3);
   });
   it('onstop', () => {
     let dummy: number = 0;
-    const obj = reactive({ foo: 1 });
-    const onstop = vi.fn(() => {
-      dummy = 1;
-    });
+    const onstop = vi.fn();
     const runner = effect(() =>{
         dummy += 1;
       },
       { onstop }
     );
-    obj.foo++;
-    expect(dummy).toBe(2);
     stop(runner);
     expect(onstop).toBeCalledTimes(1);
-    expect(dummy).toBe(1);
   })
  })

@@ -3,11 +3,15 @@ type EffectOption = {
   onstop?: () => void;
 }
 
+let activeEffect: ReactiveEffect;
+let shouldTrack: boolean = true;
+
 class ReactiveEffect {
   private _fn: Function;
   public Option: EffectOption | undefined;
   public deps: Array<Set<ReactiveEffect>>;
-  
+  public active: boolean = true;
+
   constructor(fn: Function, 
     option?: EffectOption | undefined
   ) {
@@ -17,21 +21,30 @@ class ReactiveEffect {
   }
 
   run() {
+    if (!this.active) {
+      return this._fn();
+    } 
+
+    shouldTrack = true;
     activeEffect = this;
-    return this._fn();
+    const res = this._fn();
+    shouldTrack = false;
+    return res;
   }
 
   stop() {
-    if (this.Option && this.Option?.onstop) {
-      this.Option.onstop();
+    if (this.active) {
+      if (this.Option && this.Option?.onstop) {
+        this.Option.onstop();
+      }
+      this.deps?.forEach(dep => {
+        dep.delete(this);
+      });
+      this.active = false;
     }
-    this.deps?.forEach(dep => {
-      dep.delete(this);
-    });
   }
 }
 
-let activeEffect: ReactiveEffect;
 export function effect(fn: Function, option?: EffectOption | undefined): Function {
   const reactiveEffect = new ReactiveEffect(fn, option);
 
@@ -44,7 +57,7 @@ export function effect(fn: Function, option?: EffectOption | undefined): Functio
   return runner;
 }
 
-let targetMap = new Map<any, Map<string | symbol, Set<ReactiveEffect>>>();
+let targetMap = new WeakMap<any, Map<string | symbol, Set<ReactiveEffect>>>();
 export function track(target: any, key: string | symbol){
   // target -> key -> fn
   let depsMap = targetMap.get(target);
@@ -59,7 +72,7 @@ export function track(target: any, key: string | symbol){
     depsMap.set(key, dep);
   }
 
-  if (activeEffect) {
+  if (activeEffect && shouldTrack) {
     dep.add(activeEffect);
     activeEffect.deps?.push(dep);
   }
