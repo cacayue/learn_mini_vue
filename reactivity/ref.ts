@@ -35,6 +35,27 @@ export function ref(raw: any) {
   return new RefImpl(raw);
 }
 
+export function proxyRefs(raw: any) {
+  return new Proxy(raw, {
+    get(target, key) {
+      const res = Reflect.get(target, key);
+      return unRef(res);
+    },
+    set(target, key, newValue) {
+      const res = Reflect.get(target, key);
+      if (!isRef(res) && !isRef(newValue)) {
+        Reflect.set(target, key, newValue);
+      } else if (isRef(res) && !isRef(newValue)) {
+        res.value = newValue;
+      } else if (isRef(res) && isRef(newValue)) {
+        res.value = newValue.value;
+      }
+
+      return res;
+    }
+  });
+}
+
 export function isRef(raw: any) {
   return !!raw._v_isRef;
 }
