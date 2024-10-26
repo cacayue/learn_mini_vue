@@ -1,3 +1,5 @@
+import { h } from '../../lib/guide-mini-vue.esm.js';
+
 export const App = {
   // .vue
   setup() {
@@ -6,6 +8,7 @@ export const App = {
     };
   },
   render() {
+    const divContainer = document.querySelector('div');
     return h('div', `hi, ${this.message}`);
   }
 };
