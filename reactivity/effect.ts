@@ -1,4 +1,3 @@
-import { triggerEffects, isTracking } from '../../vue_sourcecode/mini-vue/packages/reactivity/src/effect';
 type EffectOption = {
   scheduler?: () => void;
   onstop?: () => void;
@@ -7,7 +6,7 @@ type EffectOption = {
 let activeEffect: ReactiveEffect;
 let shouldTrack: boolean = true;
 
-class ReactiveEffect {
+export class ReactiveEffect {
   private _fn: Function;
   public Option: EffectOption | undefined;
   public deps: Array<Set<ReactiveEffect>>;
