@@ -6,6 +6,7 @@ export function render(vnode: any, container: any) {
 }
 
 function patch(vnode: any, container: any) {
+  // TODO ElementComponent
   processComponent(vnode, container);
 }
 
@@ -20,7 +21,9 @@ function mountComponent(vnode: any, container: any) {
 }
 
 function setupRenderEffect(instance: any, container: any) {
-  const subTree = instance.render;
-  // vnode => element => mountElement
-  patch(subTree, container);
+  if (instance.render) {
+    const subTree = instance.render();
+    // vnode => element => mountElement
+    patch(subTree, container);
+  }
 }
