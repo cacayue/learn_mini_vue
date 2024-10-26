@@ -6,8 +6,39 @@ export function render(vnode: any, container: any) {
 }
 
 function patch(vnode: any, container: any) {
-  // TODO ElementComponent
-  processComponent(vnode, container);
+  const type = vnode.type;
+  if (typeof type === 'string') {
+    processElementComponent(vnode, container);
+  } else if (typeof type === 'object') {
+    processComponent(vnode, container);
+  }
+}
+
+function processElementComponent(vnode: any, container: any) {
+  mountElement(vnode, container);
+}
+
+function mountElement(vnode: any, container: any) {
+  // 添加真实的el元素
+  const { type, props, children } = vnode;
+  const el: Element = document.createElement(type);
+
+  if (typeof children === 'string') {
+    el.textContent = children;
+  } else if (Array.isArray(children)) {
+    children.forEach((v) => {
+      patch(v, el);
+    });
+  }
+
+  for (const key in props) {
+    if (Object.prototype.hasOwnProperty.call(props, key)) {
+      const element = props[key];
+      el.setAttribute(key, element);
+    }
+  }
+
+  container.append(el);
 }
 
 function processComponent(vnode: any, container: any) {

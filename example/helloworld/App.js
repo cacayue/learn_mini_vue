@@ -9,6 +9,28 @@ export const App = {
   },
   render() {
     const divContainer = document.querySelector('div');
-    return h('div', `hi, ${this.message}`);
+    // return h('div', `hi, ${this.message}`);
+    return h(
+      'div',
+      {
+        class: 'red, blue'
+      },
+      [
+        h(
+          'p',
+          {
+            class: 'red'
+          },
+          'lol'
+        ),
+        h(
+          'p',
+          {
+            class: 'blue'
+          },
+          'mini-vue'
+        )
+      ]
+    );
   }
 };
