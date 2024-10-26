@@ -1,7 +1,6 @@
 import { it, expect, describe, vi } from 'vitest';
 import { reactive } from '../reactive';
 import { computed } from '../computed';
-import foo from '../../../vue_sourcecode/core/packages/compiler-sfc/__tests__/compileScript.spec';
 
 describe('computed', () => {
   it('happy path', () => {

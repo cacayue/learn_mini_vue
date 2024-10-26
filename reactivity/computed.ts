@@ -5,6 +5,10 @@ class ComputedImpl {
   private _dirty = true;
   private _effect: ReactiveEffect;
   constructor(getter: any) {
+    // 将getter也变为响应式
+    // 那么当getter内部获取值发生变化时会触发getter变化, 也就触发_effect变化, 然后可以调用scheduler
+    // a = reactive()
+    // getter = fn(() => { return a }) => a = newValue => getter.scheduler => _dirty变化
     this._effect = new ReactiveEffect(getter, {
       scheduler: () => {
         if (!this._dirty) {
