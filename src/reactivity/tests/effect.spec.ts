@@ -1,9 +1,9 @@
-import { describe, expect, it, vi } from "vitest";
-import { reactive } from "../reactive";
-import { effect, stop } from "../effect";
+import { describe, expect, it, vi } from 'vitest';
+import { reactive } from '../reactive';
+import { effect, stop } from '../effect';
 
- describe("effect", () => {
-  it("happy path", () => {
+describe('effect', () => {
+  it('happy path', () => {
     const user = reactive({
       age: 10
     });
@@ -18,7 +18,7 @@ import { effect, stop } from "../effect";
     expect(nextAge).toBe(12);
   });
 
-  it("return runner", () => {
+  it('return runner', () => {
     // 1. effect(fn) -> function(runner) -> fn -> return
     let foo = 10;
     const runner = effect(() => {
@@ -38,7 +38,8 @@ import { effect, stop } from "../effect";
       run = runner;
     });
     const obj = reactive({ foo: 1 });
-    const runner = effect(() =>{
+    const runner = effect(
+      () => {
         dummy = obj.foo;
       },
       { scheduler }
@@ -53,13 +54,12 @@ import { effect, stop } from "../effect";
     run();
     expect(dummy).toBe(2);
   });
-  it("stop", () => {
+  it('stop', () => {
     let dummy;
     const obj = reactive({ prop: 1 });
-    const runner = effect(() =>{
-        dummy = obj.prop;
-      },
-    );
+    const runner = effect(() => {
+      dummy = obj.prop;
+    });
     obj.prop = 2;
     expect(dummy).toBe(2);
     stop(runner);
@@ -73,12 +73,13 @@ import { effect, stop } from "../effect";
   it('onstop', () => {
     let dummy: number = 0;
     const onstop = vi.fn();
-    const runner = effect(() =>{
+    const runner = effect(
+      () => {
         dummy += 1;
       },
       { onstop }
     );
     stop(runner);
     expect(onstop).toBeCalledTimes(1);
-  })
- })
+  });
+});

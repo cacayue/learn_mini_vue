@@ -1,4 +1,4 @@
-import { track, trigger } from '../reactivity/effect';
+import { track, trigger } from './effect';
 import { extend, isObject } from '../Shared';
 import { isReactiveFlags, reactive, readonly } from './reactive';
 

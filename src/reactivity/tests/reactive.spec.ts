@@ -4,26 +4,26 @@ import { isProxy, isReactive, isReadonly, reactive, readonly } from '../reactive
 describe('reactive-test', () => {
   it('set get', () => {
     const user = { age: 10 };
-    const observaed = reactive(user);
-    expect(observaed).not.toBe(user);
-    expect(observaed.age).toBe(10);
+    const observed = reactive(user);
+    expect(observed).not.toBe(user);
+    expect(observed.age).toBe(10);
   });
   it('isReactive', () => {
     const user = { age: 10 };
-    const observaed = reactive(user);
-    expect(isReactive(observaed)).toBe(true);
+    const observed = reactive(user);
+    expect(isReactive(observed)).toBe(true);
     expect(isReactive(user)).toBe(false);
-    expect(isProxy(observaed)).toBe(true);
+    expect(isProxy(observed)).toBe(true);
   });
 
   it('nested reactive', () => {
-    const orignal = {
+    const original = {
       nested: {
         foo: 1
       },
       array: [{ bar: 2 }]
     };
-    const observed = reactive(orignal);
+    const observed = reactive(original);
     expect(isReactive(observed.nested)).toBe(true);
     expect(isReactive(observed.array)).toBe(true);
     expect(isReactive(observed.array[0])).toBe(true);

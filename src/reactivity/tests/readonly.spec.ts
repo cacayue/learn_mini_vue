@@ -30,20 +30,20 @@ describe('readonly', () => {
 
   it('isReadOnly', () => {
     const user = { age: 10 };
-    const observaed = readonly(user);
+    const observed = readonly(user);
     expect(isReadonly(user)).toBe(false);
-    expect(isReadonly(observaed)).toBe(true);
-    expect(isProxy(observaed)).toBe(true);
+    expect(isReadonly(observed)).toBe(true);
+    expect(isProxy(observed)).toBe(true);
   });
 
   it('nested readonly', () => {
-    const orignal = {
+    const original = {
       nested: {
         foo: 1
       },
       array: [{ bar: 2 }]
     };
-    const observed = readonly(orignal);
+    const observed = readonly(original);
     expect(isReadonly(observed.nested)).toBe(true);
     expect(isReadonly(observed.array)).toBe(true);
     expect(isReadonly(observed.array[0])).toBe(true);
