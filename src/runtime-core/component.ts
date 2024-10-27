@@ -1,3 +1,4 @@
+import { ShapeFlags } from '../Shared/shapeFlag';
 import { PublicInstanceProxyHandlers } from './comonentPublicProxyInstance';
 
 export function createComponentInstance(vnode: any) {
