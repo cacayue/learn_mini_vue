@@ -1,5 +1,7 @@
 import { h } from '../../lib/guide-mini-vue.esm.js';
 
+window.self = null;
+
 export const App = {
   // .vue
   setup() {
@@ -8,6 +10,7 @@ export const App = {
     };
   },
   render() {
+    window.self = this;
     // return h('div', `hi, ${this.message}`);
     return h(
       'div',
