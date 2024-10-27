@@ -35,7 +35,13 @@ function mountElement(vNode: any, container: any) {
   for (const key in props) {
     if (Object.prototype.hasOwnProperty.call(props, key)) {
       const element = props[key];
-      el.setAttribute(key, element);
+      const isOn = (key: string) => /^on[A-Z]/.test(key);
+      if (isOn(key)) {
+        const event = key.slice(2).toLowerCase();
+        el.addEventListener(event, element);
+      } else {
+        el.setAttribute(key, element);
+      }
     }
   }
 

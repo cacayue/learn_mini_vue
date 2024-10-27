@@ -21,7 +21,13 @@ export const App = {
         h(
           'p',
           {
-            class: 'red'
+            class: 'red',
+            onClick() {
+              console.log('clicked');
+            },
+            onMousedown() {
+              console.log('mousedown');
+            }
           },
           `LOL, ${this.message}`
         ),
