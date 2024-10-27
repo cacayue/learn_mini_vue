@@ -8,7 +8,6 @@ export const App = {
     };
   },
   render() {
-    const divContainer = document.querySelector('div');
     // return h('div', `hi, ${this.message}`);
     return h(
       'div',
@@ -21,7 +20,7 @@ export const App = {
           {
             class: 'red'
           },
-          'lol'
+          `LOL, ${this.message}`
         ),
         h(
           'p',
