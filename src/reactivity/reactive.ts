@@ -30,5 +30,8 @@ export function isProxy(value: any) {
 }
 
 function createActiveProxy(raw: any, baseHandler: any) {
+  if (!raw) {
+    return;
+  }
   return new Proxy(raw, baseHandler);
 }
