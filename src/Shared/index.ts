@@ -11,3 +11,7 @@ export function hasChanged(value: any, newValue: any) {
 export function hasOwn(obj: any, key: string): boolean {
   return obj && Object.prototype.hasOwnProperty.call(obj, key);
 }
+
+export function convertFirstUpperCase(event: string) {
+  return event.charAt(0).toUpperCase() + event.slice(1);
+}

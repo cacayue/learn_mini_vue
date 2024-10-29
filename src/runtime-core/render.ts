@@ -1,3 +1,4 @@
+import { hasOwn } from '../Shared/index';
 import { ShapeFlags } from '../Shared/shapeFlag';
 import { createComponentInstance, setupComponent } from './component';
 
@@ -33,7 +34,7 @@ function mountElement(vNode: any, container: any) {
   }
 
   for (const key in props) {
-    if (Object.prototype.hasOwnProperty.call(props, key)) {
+    if (hasOwn(props, key)) {
       const element = props[key];
       const isOn = (key: string) => /^on[A-Z]/.test(key);
       if (isOn(key)) {
