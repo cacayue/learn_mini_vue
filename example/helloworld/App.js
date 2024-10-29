@@ -1,4 +1,5 @@
 import { h } from '../../lib/guide-mini-vue.esm.js';
+import { Foo } from './foo.js';
 
 window.self = null;
 
@@ -31,13 +32,14 @@ export const App = {
           },
           `LOL, ${this.message}`
         ),
-        h(
-          'p',
-          {
-            class: 'blue'
-          },
-          'mini-vue'
-        )
+        // h(
+        //   'p',
+        //   {
+        //     class: 'blue'
+        //   },
+        //   'mini-vue'
+        // )
+        h(Foo, { count: 1 })
       ]
     );
   }
