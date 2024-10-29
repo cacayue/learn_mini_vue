@@ -1,5 +1,6 @@
-import { ShapeFlags } from '../Shared/shapeFlag';
+import { shadowReadonly } from '../reactivity/reactive';
 import { PublicInstanceProxyHandlers } from './comonentPublicProxyInstance';
+import { initProps } from './componentProps';
 
 export function createComponentInstance(vnode: any) {
   const component = {
@@ -7,30 +8,29 @@ export function createComponentInstance(vnode: any) {
     type: vnode.type,
     setupState: {},
     render: undefined,
-    proxy: undefined
+    proxy: undefined,
+    props: {}
   };
 
   return component;
 }
 
 export function setupComponent(instance: any) {
-  initProps(instance.vnode.props);
+  initProps(instance, instance.vnode.props);
   initSlots(instance.vnode.slots);
   setupStatefulComponent(instance);
 }
 
-function initProps(props: any) {
-  // TODO
-}
 function initSlots(slots: any) {
   // TODO
 }
 
 function setupStatefulComponent(instance: any) {
   const Component = instance.type;
+  const { props } = instance;
   const { setup } = Component;
   if (setup) {
-    const setupResult = setup();
+    const setupResult = setup(shadowReadonly(props));
     handleSetupResult(instance, setupResult);
   }
   instance.proxy = new Proxy({ _: instance }, PublicInstanceProxyHandlers);
