@@ -7,20 +7,14 @@ export const App = {
     return {};
   },
   render() {
-    // return h('div', {}, [
-    //   // h('div', {}, `App`),
-    //   h(Foo, {
-    //     // on + event
-    //     onAdd() {
-    //       console.log('App add');
-    //     }
-    //   })
-    // ]);
-    return h(Foo, {
-      // on + event
-      onAdd() {
-        console.log('App add');
-      }
-    });
+    return h('div', {}, [
+      h('div', {}, `App`),
+      h(Foo, {
+        // on + event
+        onAdd() {
+          console.log('App add');
+        }
+      })
+    ]);
   }
 };
