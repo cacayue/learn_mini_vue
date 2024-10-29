@@ -16,6 +16,14 @@ export function emit(instance: any, event: string, ...args: any[]) {
       emitFunc(...args);
     }
   }
+
+  const key2 = handlerName2(event);
+  if (hasOwn(props, key2)) {
+    const emitFunc = props[key2];
+    if (emitFunc) {
+      emitFunc(...args);
+    }
+  }
 }
 
 function handlerOnName(event: string) {
@@ -29,4 +37,12 @@ function handlerName(event: string) {
     arr[i] = convertFirstUpperCase(arr[i]);
   }
   return `on${arr.join('')}`;
+}
+
+function handlerName2(event: string) {
+  var arr = event.split('-');
+  for (var i = 1; i < arr.length; i++) {
+    arr[i] = convertFirstUpperCase(arr[i]);
+  }
+  return `${arr.join('')}`;
 }

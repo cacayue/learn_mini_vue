@@ -16,6 +16,9 @@ export const App = {
         },
         onAddFoo(e1, e2) {
           console.log('App Add Foo', e1, e2);
+        },
+        addFoo(e1, e2) {
+          console.log('App Add Foo', e1, e2);
         }
       })
     ]);

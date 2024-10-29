@@ -8,7 +8,7 @@ export const Foo = {
     };
 
     const emitAddFoo = () => {
-      emit('add-foo', 1, 2);
+      emit('add-foo', 1, 3);
     };
 
     return {
