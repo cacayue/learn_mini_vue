@@ -11,8 +11,11 @@ export const App = {
       h('div', {}, `App`),
       h(Foo, {
         // on + event
-        onAdd() {
-          console.log('App add');
+        onAdd(e1, e2) {
+          console.log('App add', e1, e2);
+        },
+        onAddFoo(e1, e2) {
+          console.log('App Add Foo', e1, e2);
         }
       })
     ]);

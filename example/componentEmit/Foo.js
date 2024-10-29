@@ -3,24 +3,36 @@ import { h } from '../../lib/guide-mini-vue.esm.js';
 export const Foo = {
   setup(props, { emit }) {
     const emitAdd = () => {
-      console.log('emit add');
-      emit('add');
+      emit('add', 1, 2);
+      emit('add-foo', 1, 2);
+    };
+
+    const emitAddFoo = () => {
+      emit('add-foo', 1, 2);
     };
 
     return {
-      emitAdd
+      emitAdd,
+      emitAddFoo
     };
   },
   render() {
-    const btn = h(
+    const btn1 = h(
       'button',
       {
         onClick: this.emitAdd
       },
       'emitAdd'
     );
+    const btn2 = h(
+      'button',
+      {
+        onClick: this.emitAddFoo
+      },
+      'emitAddFoo'
+    );
 
     const foo = h('p', {}, 'foo');
-    return h('div', {}, [foo, btn]);
+    return h('div', {}, [foo, btn1, btn2]);
   }
 };
