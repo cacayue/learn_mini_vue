@@ -2,6 +2,7 @@ import { shadowReadonly } from '../reactivity/reactive';
 import { PublicInstanceProxyHandlers } from './comonentPublicProxyInstance';
 import { emit } from './componentEmits';
 import { initProps } from './componentProps';
+import { initSlots } from './componentSlots';
 
 export function createComponentInstance(vnode: any) {
   const component = {
@@ -11,7 +12,8 @@ export function createComponentInstance(vnode: any) {
     render: undefined,
     proxy: undefined,
     props: {},
-    emit: () => {}
+    emit: () => {},
+    slots: {}
   };
 
   component.emit = emit.bind(null, component) as any;
@@ -21,12 +23,8 @@ export function createComponentInstance(vnode: any) {
 
 export function setupComponent(instance: any) {
   initProps(instance, instance.vnode.props);
-  initSlots(instance.vnode.slots);
+  initSlots(instance, instance.vnode.children);
   setupStatefulComponent(instance);
-}
-
-function initSlots(slots: any) {
-  // TODO
 }
 
 function setupStatefulComponent(instance: any) {
