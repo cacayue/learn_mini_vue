@@ -4,6 +4,9 @@ export const Foo = {
   setup() {},
   render() {
     const foo = h('p', {}, 'foo');
-    return h('div', {}, [foo]);
+    // foo.vNode.children
+    console.log(this.$slots);
+
+    return h('div', {}, [foo, this.$slots]);
   }
 };
