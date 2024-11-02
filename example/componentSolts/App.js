@@ -1,9 +1,12 @@
-import { h, createTextVNode } from '../../lib/guide-mini-vue.esm.js';
+import { h, createTextVNode, getCurrentInstance } from '../../lib/guide-mini-vue.esm.js';
 import { Foo } from './foo.js';
 
 export const App = {
   name: 'App',
   setup() {
+    const instance = getCurrentInstance();
+    console.log(instance, 'getCurrentInstance');
+
     return {};
   },
   render() {
