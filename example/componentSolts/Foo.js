@@ -11,12 +11,12 @@ export const Foo = {
     const ha = 'haha';
     // 具名插槽
     return h('div', {}, [
-      renderSlot(this.$slots, 'b'),
-      foo,
-      renderSlot(this.$slots, 'a', {
+      renderSlot(this.$slots, 'header', {
         age,
         ha
-      })
+      }),
+      foo,
+      renderSlot(this.$slots, 'footer')
     ]);
   }
 };
