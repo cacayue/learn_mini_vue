@@ -8,7 +8,6 @@ export const Foo = {
     console.log(this.$slots);
 
     // 具名插槽
-    // return h('div', {}, [renderSlot('a', this.$slots), foo, renderSlot('b', this.$slots)]);
-    return h('div', {}, [foo, renderSlot('b', this.$slots)]);
+    return h('div', {}, [foo, renderSlot(this.$slots, 'a')]);
   }
 };
