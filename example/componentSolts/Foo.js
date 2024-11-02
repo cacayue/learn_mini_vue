@@ -1,4 +1,4 @@
-import { h, renderSlot } from '../../lib/guide-mini-vue.esm.js';
+import { h, renderSlot, createTextVNode } from '../../lib/guide-mini-vue.esm.js';
 
 export const Foo = {
   setup() {},
@@ -16,8 +16,7 @@ export const Foo = {
         ha
       }),
       foo,
-      renderSlot(this.$slots, 'footer'),
-      'text children'
+      renderSlot(this.$slots, 'footer')
     ]);
   }
 };

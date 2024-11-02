@@ -3,6 +3,7 @@ import { ShapeFlags } from '../Shared/shapeFlag';
 import { createComponentInstance, setupComponent } from './component';
 
 export const Fragment = Symbol('Fragment');
+export const Text = Symbol('Text');
 
 export function render(vNode: any, container: any) {
   // call patch: 递归处理组件或者节点
@@ -14,11 +15,19 @@ function patch(vNode: any, container: any) {
 
   if (type === Fragment) {
     processFragment(vNode, container);
+  } else if (type === Text) {
+    processText(vNode, container);
   } else if (shapeFlag & ShapeFlags.ELEMENT) {
     processElementComponent(vNode, container);
   } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
     processComponent(vNode, container);
   }
+}
+
+function processText(vNode: any, container: any) {
+  const { children } = vNode;
+  const textNode: any = (vNode.el = document.createTextNode(children));
+  container.append(textNode);
 }
 
 function processFragment(vNode: any, container: any) {

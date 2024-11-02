@@ -1,5 +1,5 @@
 import { ShapeFlags } from '../Shared/shapeFlag';
-import { Fragment } from './render';
+import { Text } from './render';
 
 export function createVNode(type: any, props?: any, children?: any) {
   let vNode = {
@@ -29,4 +29,8 @@ export function createVNode(type: any, props?: any, children?: any) {
   }
 
   return vNode;
+}
+
+export function createTextVNode(text: string) {
+  return createVNode(Text, {}, text);
 }
