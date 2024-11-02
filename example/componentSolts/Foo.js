@@ -7,7 +7,16 @@ export const Foo = {
     // foo.vNode.children
     console.log(this.$slots);
 
+    const age = 18;
+    const ha = 'haha';
     // 具名插槽
-    return h('div', {}, [foo, renderSlot(this.$slots, 'a')]);
+    return h('div', {}, [
+      renderSlot(this.$slots, 'b'),
+      foo,
+      renderSlot(this.$slots, 'a', {
+        age,
+        ha
+      })
+    ]);
   }
 };
