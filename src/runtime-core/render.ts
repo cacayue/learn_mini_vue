@@ -2,22 +2,37 @@ import { hasOwn } from '../Shared/index';
 import { ShapeFlags } from '../Shared/shapeFlag';
 import { createComponentInstance, setupComponent } from './component';
 
+export const Fragment = Symbol('Fragment');
+
 export function render(vNode: any, container: any) {
   // call patch: 递归处理组件或者节点
   patch(vNode, container);
 }
 
 function patch(vNode: any, container: any) {
-  const { shapeFlag } = vNode;
-  if (shapeFlag & ShapeFlags.ELEMENT) {
+  const { type, shapeFlag } = vNode;
+
+  if (type === Fragment) {
+    processFragment(vNode, container);
+  } else if (shapeFlag & ShapeFlags.ELEMENT) {
     processElementComponent(vNode, container);
   } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
     processComponent(vNode, container);
   }
 }
 
+function processFragment(vNode: any, container: any) {
+  mountChildren(vNode, container);
+}
+
 function processElementComponent(vNode: any, container: any) {
   mountElement(vNode, container);
+}
+
+function mountChildren(vNode: any, container: any) {
+  vNode.children.forEach((v: any) => {
+    patch(v, container);
+  });
 }
 
 function mountElement(vNode: any, container: any) {
@@ -28,9 +43,7 @@ function mountElement(vNode: any, container: any) {
   if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
     el.textContent = children;
   } else if (shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
-    children.forEach((v: any) => {
-      patch(v, el);
-    });
+    mountChildren(vNode, el);
   }
 
   for (const key in props) {
