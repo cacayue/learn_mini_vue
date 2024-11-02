@@ -7,6 +7,8 @@ export const Foo = {
     // foo.vNode.children
     console.log(this.$slots);
 
-    return h('div', {}, [foo, renderSlot(this.$slots)]);
+    // 具名插槽
+    // return h('div', {}, [renderSlot('a', this.$slots), foo, renderSlot('b', this.$slots)]);
+    return h('div', {}, [foo, renderSlot('b', this.$slots)]);
   }
 };
