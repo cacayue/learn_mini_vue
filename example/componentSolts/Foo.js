@@ -1,4 +1,4 @@
-import { h } from '../../lib/guide-mini-vue.esm.js';
+import { h, renderSlot } from '../../lib/guide-mini-vue.esm.js';
 
 export const Foo = {
   setup() {},
@@ -7,6 +7,6 @@ export const Foo = {
     // foo.vNode.children
     console.log(this.$slots);
 
-    return h('div', {}, [foo, this.$slots]);
+    return h('div', {}, [foo, renderSlot(this.$slots)]);
   }
 };
