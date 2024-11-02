@@ -4,10 +4,10 @@ import { emit } from './componentEmits';
 import { initProps } from './componentProps';
 import { initSlots } from './componentSlots';
 
-export function createComponentInstance(vnode: any) {
+export function createComponentInstance(vNode: any) {
   const component = {
-    vnode,
-    type: vnode.type,
+    vNode,
+    type: vNode.type,
     setupState: {},
     render: undefined,
     proxy: undefined,
@@ -22,8 +22,8 @@ export function createComponentInstance(vnode: any) {
 }
 
 export function setupComponent(instance: any) {
-  initProps(instance, instance.vnode.props);
-  initSlots(instance, instance.vnode.children);
+  initProps(instance, instance.vNode.props);
+  initSlots(instance, instance.vNode.children);
   setupStatefulComponent(instance);
 }
 

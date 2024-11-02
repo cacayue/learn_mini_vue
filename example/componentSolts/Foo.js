@@ -16,7 +16,8 @@ export const Foo = {
         ha
       }),
       foo,
-      renderSlot(this.$slots, 'footer')
+      renderSlot(this.$slots, 'footer'),
+      'text children'
     ]);
   }
 };

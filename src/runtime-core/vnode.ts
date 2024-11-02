@@ -1,7 +1,7 @@
 import { ShapeFlags } from '../Shared/shapeFlag';
 
 export function createVNode(type: any, props?: any, children?: any) {
-  let vnode = {
+  let vNode = {
     type,
     props,
     children,
@@ -10,16 +10,22 @@ export function createVNode(type: any, props?: any, children?: any) {
   };
 
   if (typeof type === 'string') {
-    vnode.shapeFlag = ShapeFlags.ELEMENT;
+    vNode.shapeFlag = ShapeFlags.ELEMENT;
   } else if (typeof type === 'object') {
-    vnode.shapeFlag = ShapeFlags.STATEFUL_COMPONENT;
+    vNode.shapeFlag = ShapeFlags.STATEFUL_COMPONENT;
   }
 
   if (typeof children === 'string') {
-    vnode.shapeFlag |= ShapeFlags.TEXT_CHILDREN;
+    vNode.shapeFlag |= ShapeFlags.TEXT_CHILDREN;
   } else if (Array.isArray(children)) {
-    vnode.shapeFlag |= ShapeFlags.ARRAY_CHILDREN;
+    vNode.shapeFlag |= ShapeFlags.ARRAY_CHILDREN;
   }
 
-  return vnode;
+  if (vNode.shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
+    if (typeof children === 'object') {
+      vNode.shapeFlag |= ShapeFlags.SLOT_CHILDREN;
+    }
+  }
+
+  return vNode;
 }
