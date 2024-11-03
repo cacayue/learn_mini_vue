@@ -14,7 +14,7 @@ export function createComponentInstance(vNode: any, parent: any) {
     props: {},
     emit: () => {},
     slots: {},
-    provides: parent?.provides ?? {},
+    provides: Object.assign({}, parent?.provides ?? {}),
     parent: parent
   };
 
