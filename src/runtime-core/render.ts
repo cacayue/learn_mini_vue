@@ -7,7 +7,7 @@ export const Text = Symbol('Text');
 
 export function render(vNode: any, container: any) {
   // call patch: 递归处理组件或者节点
-  patch(vNode, container, null);
+  patch(vNode, container, undefined);
 }
 
 function patch(vNode: any, container: any, parentComponent: any) {
