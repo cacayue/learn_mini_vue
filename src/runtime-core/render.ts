@@ -7,7 +7,7 @@ export const Fragment = Symbol('Fragment');
 export const Text = Symbol('Text');
 
 export function createRender(options: any) {
-  const { createElement, patchProps, insert } = options;
+  const { createElement, patchProp, insert } = options;
 
   function render(vNode: any, container: any) {
     // call patch: 递归处理组件或者节点
@@ -61,8 +61,7 @@ export function createRender(options: any) {
 
     for (const key in props) {
       if (hasOwn(props, key)) {
-        const element = props[key];
-        patchProps(el, key, element);
+        patchProp(el, key, props[key]);
       }
     }
 
