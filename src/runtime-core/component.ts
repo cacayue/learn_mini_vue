@@ -4,7 +4,7 @@ import { emit } from './componentEmits';
 import { initProps } from './componentProps';
 import { initSlots } from './componentSlots';
 
-export function createComponentInstance(vNode: any) {
+export function createComponentInstance(vNode: any, parent: any) {
   const component = {
     vNode,
     type: vNode.type,
@@ -13,7 +13,9 @@ export function createComponentInstance(vNode: any) {
     proxy: undefined,
     props: {},
     emit: () => {},
-    slots: {}
+    slots: {},
+    provides: {},
+    parent: parent
   };
 
   component.emit = emit.bind(null, component) as any;
