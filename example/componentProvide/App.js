@@ -8,6 +8,16 @@ const Provide = {
     return {};
   },
   render() {
+    return h('div', {}, [h('p', {}, 'Provide'), h(ProvideTwo)]);
+  }
+};
+
+const ProvideTwo = {
+  name: 'ProvideTwo',
+  setup() {
+    return {};
+  },
+  render() {
     return h('div', {}, [h('p', {}, 'Provide'), h(Consumer)]);
   }
 };
