@@ -14,7 +14,7 @@ export function createComponentInstance(vNode: any, parent: any) {
     props: {},
     emit: () => {},
     slots: {},
-    provides: {},
+    provides: parent?.provides ?? {},
     parent: parent
   };
 
