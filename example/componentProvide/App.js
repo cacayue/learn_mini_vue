@@ -15,10 +15,12 @@ const Provide = {
 const ProvideTwo = {
   name: 'ProvideTwo',
   setup() {
-    return {};
+    provide('foo', 'fooValTwo');
+    const foo = inject('foo');
+    return { foo };
   },
   render() {
-    return h('div', {}, [h('p', {}, 'Provide'), h(Consumer)]);
+    return h('div', {}, [h('p', {}, `ProvideTwo: ${this.foo}`), h(Consumer)]);
   }
 };
 
