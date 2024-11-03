@@ -14,14 +14,9 @@ export function createComponentInstance(vNode: any, parent: any) {
     props: {},
     emit: () => {},
     slots: {},
-    provides: {},
+    provides: parent?.provides ?? {},
     parent: parent
   };
-
-  if (parent?.prototype) {
-    component.prototype.provides = parent.prototype.provides;
-  }
-
   component.emit = emit.bind(null, component) as any;
 
   return component;

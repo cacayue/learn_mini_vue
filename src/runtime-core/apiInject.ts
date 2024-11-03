@@ -3,7 +3,12 @@ import { getCurrentInstance } from './component';
 export function provide(key: string, value: any) {
   const instance = getCurrentInstance();
   if (instance) {
-    instance.provides[key] = value;
+    let { provides } = instance;
+    const parentProvide = instance.parent && instance.parent.provides;
+    if (provides === parentProvide) {
+      provides = instance.provides = Object.create(parentProvide);
+    }
+    provides[key] = value;
   }
 }
 
