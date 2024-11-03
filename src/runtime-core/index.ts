@@ -1,4 +1,4 @@
-export { createApp } from './createApp';
+export { createRender } from './render';
 export { h } from './h';
 export { renderSlot } from './helper/renderSlots';
 export { createTextVNode } from './vnode';
