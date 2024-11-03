@@ -1,3 +1,4 @@
+import { proxyRefs } from '../reactivity/index';
 import { shadowReadonly } from '../reactivity/reactive';
 import { PublicInstanceProxyHandlers } from './comonentPublicProxyInstance';
 import { emit } from './componentEmits';
@@ -47,7 +48,7 @@ function handleSetupResult(instance: any, setupResult: any) {
   // TODO function
   // object
   if (setupResult && typeof setupResult === 'object') {
-    instance.setupState = setupResult;
+    instance.setupState = proxyRefs(setupResult);
   }
 
   finishComponentSetup(instance);
