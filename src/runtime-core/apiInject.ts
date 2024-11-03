@@ -12,12 +12,18 @@ export function provide(key: string, value: any) {
   }
 }
 
-export function inject(key: string) {
+export function inject(key: string, defaultValue: any) {
   const instance = getCurrentInstance();
   if (instance) {
     const val = instance.parent?.provides[key];
     if (val) {
       return val;
+    } else {
+      if (typeof defaultValue === 'function') {
+        return defaultValue();
+      } else {
+        return defaultValue;
+      }
     }
   }
 }
