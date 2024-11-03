@@ -1,5 +1,5 @@
 import { effect } from '../reactivity/index';
-import { hasOwn } from '../Shared/index';
+import { EMPTY_OBJ, hasOwn } from '../Shared/index';
 import { ShapeFlags } from '../Shared/shapeFlag';
 import { createComponentInstance, setupComponent } from './component';
 import { createAppAPI } from './createApp';
@@ -43,9 +43,38 @@ export function createRender(options: any) {
     if (!n1) {
       mountElement(n2, container, parentComponent);
     } else {
-      console.log('update ele');
-      console.log('prev', n1);
-      console.log('current', n2);
+      patchElement(n1, n2);
+    }
+  }
+
+  function patchElement(n1: any, n2: any) {
+    console.log('patchElement 1', n1);
+    console.log('patchElement 2', n2);
+    // 更新props
+    let oldProps = n1.props || EMPTY_OBJ;
+    let nextProps = n2.props || EMPTY_OBJ;
+    let el = (n2.el = n1.el);
+    patchProps(el, oldProps, nextProps);
+  }
+
+  function patchProps(el: any, oldProps: any, nextProps: any) {
+    // 更新props
+    if (oldProps !== nextProps) {
+      for (const key in nextProps) {
+        let prevVal = oldProps[key];
+        let nextVal = nextProps[key];
+        if (nextVal !== prevVal) {
+          patchProp(el, key, prevVal, nextVal);
+        }
+      }
+    }
+
+    if (oldProps !== EMPTY_OBJ) {
+      for (const key in oldProps) {
+        if (!(key in nextProps)) {
+          patchProp(el, key, oldProps[key], null);
+        }
+      }
     }
   }
 
@@ -68,7 +97,7 @@ export function createRender(options: any) {
 
     for (const key in props) {
       if (hasOwn(props, key)) {
-        patchProp(el, key, props[key]);
+        patchProp(el, key, null, props[key]);
       }
     }
 
@@ -88,19 +117,19 @@ export function createRender(options: any) {
   function setupRenderEffect(instance: any, vNode: any, container: any) {
     effect(() => {
       if (instance.render) {
-        const { proxy } = instance;
-        const subTree = instance.render.call(proxy);
         if (!instance.isMounted) {
-          // vNode => element => mountElement
+          const { proxy } = instance;
+          const subTree = (instance.subTree = instance.render.call(proxy));
           patch(null, subTree, container, instance);
+          vNode.el = subTree.el;
           instance.isMounted = true;
         } else {
-          const prevSubTree = instance.subTree;
+          const { proxy } = instance;
           const subTree = instance.render.call(proxy);
+          const prevSubTree = instance.subTree;
+          instance.subTree = subTree;
           patch(prevSubTree, subTree, container, instance);
         }
-        vNode.el = subTree.el;
-        instance.subTree = subTree;
       }
     });
   }

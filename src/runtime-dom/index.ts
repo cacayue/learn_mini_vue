@@ -5,13 +5,17 @@ function createElement(type: string) {
   return document.createElement(type);
 }
 
-function patchProp(el: any, key: any, element: any) {
+function patchProp(el: any, key: any, oldValue: any, newValue: any) {
   const isOn = (key: string) => /^on[A-Z]/.test(key);
   if (isOn(key)) {
     const event = key.slice(2).toLowerCase();
-    el.addEventListener(event, element);
+    el.addEventListener(event, newValue);
   } else {
-    el.setAttribute(key, element);
+    if (newValue === undefined || newValue === null) {
+      el.removeAttribute(key);
+    } else {
+      el.setAttribute(key, newValue);
+    }
   }
 }
 
