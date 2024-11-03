@@ -5,7 +5,7 @@ function createElement(type: string) {
   return document.createElement(type);
 }
 
-function patchProps(el: any, key: any, element: any) {
+function patchProp(el: any, key: any, element: any) {
   const isOn = (key: string) => /^on[A-Z]/.test(key);
   if (isOn(key)) {
     const event = key.slice(2).toLowerCase();
@@ -19,7 +19,7 @@ function insert(el: any, parent: any) {
   parent.append(el);
 }
 
-const render: any = createRender({ createElement, patchProps, insert });
+const render: any = createRender({ createElement, patchProp, insert });
 
 export function createApp(...args: any) {
   return render.createApp(...args);
