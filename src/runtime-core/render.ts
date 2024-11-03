@@ -1,3 +1,4 @@
+import { effect } from '../reactivity/index';
 import { hasOwn } from '../Shared/index';
 import { ShapeFlags } from '../Shared/shapeFlag';
 import { createComponentInstance, setupComponent } from './component';
@@ -11,20 +12,20 @@ export function createRender(options: any) {
 
   function render(vNode: any, container: any) {
     // call patch: 递归处理组件或者节点
-    patch(vNode, container, undefined);
+    patch(null, vNode, container, undefined);
   }
 
-  function patch(vNode: any, container: any, parentComponent: any) {
-    const { type, shapeFlag } = vNode;
+  function patch(n1: any, n2: any, container: any, parentComponent: any) {
+    const { type, shapeFlag } = n2;
 
     if (type === Fragment) {
-      processFragment(vNode, container, parentComponent);
+      processFragment(n2, container, parentComponent);
     } else if (type === Text) {
-      processText(vNode, container);
+      processText(n2, container);
     } else if (shapeFlag & ShapeFlags.ELEMENT) {
-      processElementComponent(vNode, container, parentComponent);
+      processElementComponent(n1, n2, container, parentComponent);
     } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
-      processComponent(vNode, container, parentComponent);
+      processComponent(n2, container, parentComponent);
     }
   }
 
@@ -38,13 +39,19 @@ export function createRender(options: any) {
     mountChildren(vNode, container, parentComponent);
   }
 
-  function processElementComponent(vNode: any, container: any, parentComponent: any) {
-    mountElement(vNode, container, parentComponent);
+  function processElementComponent(n1: any, n2: any, container: any, parentComponent: any) {
+    if (!n1) {
+      mountElement(n2, container, parentComponent);
+    } else {
+      console.log('update ele');
+      console.log('prev', n1);
+      console.log('current', n2);
+    }
   }
 
   function mountChildren(vNode: any, container: any, parentComponent: any) {
     vNode.children.forEach((v: any) => {
-      patch(v, container, parentComponent);
+      patch(null, v, container, parentComponent);
     });
   }
 
@@ -79,13 +86,23 @@ export function createRender(options: any) {
   }
 
   function setupRenderEffect(instance: any, vNode: any, container: any) {
-    if (instance.render) {
-      const { proxy } = instance;
-      const subTree = instance.render.call(proxy);
-      // vNode => element => mountElement
-      patch(subTree, container, instance);
-      vNode.el = subTree.el;
-    }
+    effect(() => {
+      if (instance.render) {
+        const { proxy } = instance;
+        const subTree = instance.render.call(proxy);
+        if (!instance.isMounted) {
+          // vNode => element => mountElement
+          patch(null, subTree, container, instance);
+          instance.isMounted = true;
+        } else {
+          const prevSubTree = instance.subTree;
+          const subTree = instance.render.call(proxy);
+          patch(prevSubTree, subTree, container, instance);
+        }
+        vNode.el = subTree.el;
+        instance.subTree = subTree;
+      }
+    });
   }
 
   return {
