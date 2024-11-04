@@ -66,8 +66,8 @@ export function createRender(options: any) {
     if (nextShapeFlag & ShapeFlags.TEXT_CHILDREN) {
       if (prevShapeFlag & ShapeFlags.ARRAY_CHILDREN) {
         unmountChildren(n1);
-        setTextContext(container, c2);
       }
+      setTextContext(container, c2);
     }
 
     if (nextShapeFlag & ShapeFlags.ARRAY_CHILDREN) {
