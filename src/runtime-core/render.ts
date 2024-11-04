@@ -8,7 +8,7 @@ export const Fragment = Symbol('Fragment');
 export const Text = Symbol('Text');
 
 export function createRender(options: any) {
-  const { createElement, patchProp, insert } = options;
+  const { createElement, patchProp, insert, remove, setTextContext } = options;
 
   function render(vNode: any, container: any) {
     // call patch: 递归处理组件或者节点
@@ -43,18 +43,39 @@ export function createRender(options: any) {
     if (!n1) {
       mountElement(n2, container, parentComponent);
     } else {
-      patchElement(n1, n2);
+      patchElement(n1, n2, container, parentComponent);
     }
   }
 
-  function patchElement(n1: any, n2: any) {
-    console.log('patchElement 1', n1);
-    console.log('patchElement 2', n2);
-    // 更新props
+  function patchElement(n1: any, n2: any, container: any, parentComponent: any) {
     let oldProps = n1.props || EMPTY_OBJ;
     let nextProps = n2.props || EMPTY_OBJ;
     let el = (n2.el = n1.el);
+    // 更新Children
+    patchChildren(n1, n2, el);
+    // 更新props
     patchProps(el, oldProps, nextProps);
+  }
+
+  function patchChildren(n1: any, n2: any, container: any) {
+    // 新的是Array
+    const prevShapeFlag = n1.shapeFlag;
+    const nextShapeFlag = n2.shapeFlag;
+    const c2 = n2.children;
+
+    if (nextShapeFlag & ShapeFlags.TEXT_CHILDREN) {
+      if (prevShapeFlag & ShapeFlags.ARRAY_CHILDREN) {
+        unmountChildren(n1);
+        setTextContext(container, c2);
+      }
+    }
+  }
+
+  function unmountChildren(children: any) {
+    for (let i = 0; i < children.length; i++) {
+      const element = children[i].el;
+      remove(element);
+    }
   }
 
   function patchProps(el: any, oldProps: any, nextProps: any) {
