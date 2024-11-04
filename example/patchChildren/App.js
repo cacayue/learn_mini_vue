@@ -2,6 +2,7 @@ import { h } from '../../lib/guide-mini-vue.esm.js';
 import ArrayToText from './ArrayToText.js';
 import TextToArray from './TextToArray.js';
 import TextToText from './TextToText.js';
+import ArrayToArray from './ArrayToArray.js';
 
 export const App = {
   name: 'App',
@@ -21,7 +22,9 @@ export const App = {
         // 老的是Text, 新的是array
         //h(TextToArray),
         // 老的是Text, 新的是text
-        h(TextToText)
+        // h(TextToText)
+        // 老的是array, 新的是array
+        h(ArrayToArray)
       ]
     );
   }
