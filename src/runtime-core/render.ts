@@ -52,12 +52,12 @@ export function createRender(options: any) {
     let nextProps = n2.props || EMPTY_OBJ;
     let el = (n2.el = n1.el);
     // 更新Children
-    patchChildren(n1, n2, el);
+    patchChildren(n1, n2, el, parentComponent);
     // 更新props
     patchProps(el, oldProps, nextProps);
   }
 
-  function patchChildren(n1: any, n2: any, container: any) {
+  function patchChildren(n1: any, n2: any, container: any, parentComponent: any) {
     // 新的是Array
     const prevShapeFlag = n1.shapeFlag;
     const nextShapeFlag = n2.shapeFlag;
@@ -67,6 +67,13 @@ export function createRender(options: any) {
       if (prevShapeFlag & ShapeFlags.ARRAY_CHILDREN) {
         unmountChildren(n1);
         setTextContext(container, c2);
+      }
+    }
+
+    if (nextShapeFlag & ShapeFlags.ARRAY_CHILDREN) {
+      if (prevShapeFlag & ShapeFlags.TEXT_CHILDREN) {
+        setTextContext(container, null);
+        mountChildren(c2, container, parentComponent);
       }
     }
   }
@@ -99,8 +106,8 @@ export function createRender(options: any) {
     }
   }
 
-  function mountChildren(vNode: any, container: any, parentComponent: any) {
-    vNode.children.forEach((v: any) => {
+  function mountChildren(children: any, container: any, parentComponent: any) {
+    children.forEach((v: any) => {
       patch(null, v, container, parentComponent);
     });
   }
@@ -113,7 +120,7 @@ export function createRender(options: any) {
     if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
       el.textContent = children;
     } else if (shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
-      mountChildren(vNode, el, parentComponent);
+      mountChildren(vNode.children, el, parentComponent);
     }
 
     for (const key in props) {
