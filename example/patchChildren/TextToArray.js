@@ -1,10 +1,10 @@
 import { h, ref } from '../../lib/guide-mini-vue.esm.js';
 
-const nextChildren = 'newChildren';
-const prevChildren = [h('div', {}, 'A'), h('div', {}, 'B')];
+const prevChildren = 'newChildren';
+const nextChildren = [h('div', {}, 'A'), h('div', {}, 'B')];
 
 export default {
-  name: 'ArrayToText',
+  name: 'TextToArray',
   setup() {
     const isChange = ref(false);
     window.isChange = isChange;
