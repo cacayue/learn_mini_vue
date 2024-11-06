@@ -110,6 +110,16 @@ export function createRender(options: any) {
       e1--;
       e2--;
     }
+
+    while (e1 <= i && i <= e2) {
+      let n2 = c2[i];
+      if (n2) {
+        patch(null, n2, container, parentComponent);
+      } else {
+        break;
+      }
+      i++;
+    }
   }
 
   function isSomeVNodeType(n1: any, n2: any) {
