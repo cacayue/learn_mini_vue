@@ -61,6 +61,7 @@ export function createRender(options: any) {
     // 新的是Array
     const prevShapeFlag = n1.shapeFlag;
     const nextShapeFlag = n2.shapeFlag;
+    const c1 = n1.children;
     const c2 = n2.children;
 
     if (nextShapeFlag & ShapeFlags.TEXT_CHILDREN) {
@@ -74,8 +75,46 @@ export function createRender(options: any) {
       if (prevShapeFlag & ShapeFlags.TEXT_CHILDREN) {
         setTextContext(container, null);
         mountChildren(c2, container, parentComponent);
+      } else {
+        // Array To Array
+        patchKeyedChildren(c1, c2, container, parentComponent);
       }
     }
+  }
+
+  function patchKeyedChildren(c1: Array<any>, c2: Array<any>, container: any, parentComponent: any) {
+    // body
+    let i = 0;
+    let e1 = c1.length - 1;
+    let e2 = c2.length - 1;
+
+    while (i <= e1 && i <= e2) {
+      let n1 = c1[i];
+      let n2 = c2[i];
+      if (isSomeVNodeType(n1, n2)) {
+        patch(n1, n2, container, parentComponent);
+      } else {
+        break;
+      }
+      i++;
+    }
+
+    while (i <= e1 && i <= e2) {
+      let n1 = c1[e1];
+      let n2 = c2[e2];
+      if (isSomeVNodeType(n1, n2)) {
+        patch(n1, n2, container, parentComponent);
+      } else {
+        break;
+      }
+      e1--;
+      e2--;
+    }
+  }
+
+  function isSomeVNodeType(n1: any, n2: any) {
+    // body
+    return n1.key === n2.key && n1.type === n2.type;
   }
 
   function unmountChildren(children: any) {
