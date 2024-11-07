@@ -129,6 +129,39 @@ export function createRender(options: any) {
         remove(c1[e1]?.el);
         i++;
       }
+    } else {
+      // 中间对比
+      let s1 = i;
+      let s2 = i;
+      let keyToNewMap = new Map();
+
+      // 循环新节点, 构建新节点映射 O(i)
+      for (let i = s2; i <= e2; i++) {
+        const nextChildren = c2[i];
+        keyToNewMap.set(nextChildren.key, i);
+      }
+
+      // 循环老节点
+      for (let i = s1; i <= e1; i++) {
+        const prevChildren = c1[i];
+        // 根据map 获取是否存在相同的新节点
+        let nextIndex = keyToNewMap.get(prevChildren?.key);
+        if (nextIndex === undefined) {
+          // map中没有, 则根据循环 获取是否存在相同的新节点
+          for (let j = 0; j < e2; j++) {
+            const nextChildrenJ = c2[j];
+            if (isSomeVNodeType(prevChildren, nextChildrenJ)) {
+              nextIndex = j;
+              break;
+            }
+          }
+        }
+        if (nextIndex === undefined) {
+          remove(prevChildren.el);
+        } else {
+          patch(prevChildren, c2[nextIndex], container, parentComponent, null);
+        }
+      }
     }
   }
 
