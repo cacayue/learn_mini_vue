@@ -56,24 +56,24 @@ import { h, ref } from '../../lib/guide-mini-vue.esm.js';
 // (a b) c
 // (a b)
 // i = 2, e1 = 2, e2 = 1
-const prevChildren = [
-  h("p", { key: "A" }, "A"),
-  h("p", { key: "B" }, "B"),
-  h("p", { key: "C" }, "C"),
-];
-const nextChildren = [h("p", { key: "A" }, "A"), h("p", { key: "B" }, "B")];
+// const prevChildren = [
+//   h("p", { key: "A" }, "A"),
+//   h("p", { key: "B" }, "B"),
+//   h("p", { key: "C" }, "C"),
+// ];
+// const nextChildren = [h("p", { key: "A" }, "A"), h("p", { key: "B" }, "B")];
 
 // 右侧
 // a (b c)
 // (b c)
 // i = 0, e1 = 0, e2 = -1
 
-// const prevChildren = [
-//   h("p", { key: "A" }, "A"),
-//   h("p", { key: "B" }, "B"),
-//   h("p", { key: "C" }, "C"),
-// ];
-// const nextChildren = [h("p", { key: "B" }, "B"), h("p", { key: "C" }, "C")];
+const prevChildren = [
+  h("p", { key: "A" }, "A"),
+  h("p", { key: "B" }, "B"),
+  h("p", { key: "C" }, "C"),
+];
+const nextChildren = [h("p", { key: "B" }, "B"), h("p", { key: "C" }, "C")];
 
 export default {
   name: 'ArrayToArray',
