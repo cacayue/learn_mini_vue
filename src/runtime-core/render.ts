@@ -127,6 +127,11 @@ export function createRender(options: any) {
         break;
       }
     }
+
+    while (i <= e1 && i >= e2) {
+      remove(c1[e1]?.el);
+      i++;
+    }
   }
 
   function isSomeVNodeType(n1: any, n2: any) {
