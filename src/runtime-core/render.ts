@@ -112,25 +112,23 @@ export function createRender(options: any) {
       e2--;
     }
 
-    while (i > e1) {
+    if (i > e1) {
       if (i <= e2) {
         let n2 = c2[i];
         if (n2) {
           const position = i + 1;
           const anchor = position >= l2 ? null : c2[position].el;
-          patch(null, n2, container, parentComponent, anchor);
-        } else {
-          break;
+          while (i <= e2) {
+            patch(null, n2, container, parentComponent, anchor);
+            i++;
+          }
         }
-        i++;
-      } else {
-        break;
       }
-    }
-
-    while (i <= e1 && i >= e2) {
-      remove(c1[e1]?.el);
-      i++;
+    } else if (i > e2) {
+      while (i <= e1) {
+        remove(c1[e1]?.el);
+        i++;
+      }
     }
   }
 
