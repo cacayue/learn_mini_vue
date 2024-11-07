@@ -85,8 +85,9 @@ export function createRender(options: any) {
   function patchKeyedChildren(c1: Array<any>, c2: Array<any>, container: any, parentComponent: any, parentAnchor: any) {
     // body
     let i = 0;
+    const l2 = c2.length;
     let e1 = c1.length - 1;
-    let e2 = c2.length - 1;
+    let e2 = l2 - 1;
 
     while (i <= e1 && i <= e2) {
       let n1 = c1[i];
@@ -116,7 +117,7 @@ export function createRender(options: any) {
         let n2 = c2[i];
         if (n2) {
           const position = i + 1;
-          const anchor = position >= c2.length ? null : c2[position].el;
+          const anchor = position >= l2 ? null : c2[position].el;
           patch(null, n2, container, parentComponent, anchor);
         } else {
           break;
