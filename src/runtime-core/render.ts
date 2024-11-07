@@ -134,6 +134,10 @@ export function createRender(options: any) {
       let s1 = i;
       let s2 = i;
       let keyToNewMap = new Map();
+      // 旧节点已经遍历的数量
+      let patched = 0;
+      // 新数组需要遍历的节点数量
+      let toBePatched = e2 - s2 + 1;
 
       // 循环新节点, 构建新节点映射 O(i)
       for (let i = s2; i <= e2; i++) {
@@ -144,6 +148,10 @@ export function createRender(options: any) {
       // 循环老节点
       for (let i = s1; i <= e1; i++) {
         const prevChildren = c1[i];
+        if (patched >= toBePatched) {
+          remove(prevChildren.el);
+          continue;
+        }
         // 根据map 获取是否存在相同的新节点
         let nextIndex = keyToNewMap.get(prevChildren?.key);
         if (nextIndex === undefined) {
@@ -160,6 +168,7 @@ export function createRender(options: any) {
           remove(prevChildren.el);
         } else {
           patch(prevChildren, c2[nextIndex], container, parentComponent, null);
+          patched++;
         }
       }
     }
