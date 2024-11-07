@@ -29,7 +29,7 @@ import { h, ref } from '../../lib/guide-mini-vue.esm.js';
 //     创建新的
 // 左侧
 // (a b)
-// (a b) c
+// (a b) c d
 // i = 2, e1 = 1, e2 = 2
 // const prevChildren = [h("p", { key: "A" }, "A"), h("p", { key: "B" }, "B")];
 // const nextChildren = [
@@ -38,6 +38,19 @@ import { h, ref } from '../../lib/guide-mini-vue.esm.js';
 //   h("p", { key: "C" }, "C"),
 //   h("p", { key: "D" }, "D"),
 // ];
+
+// 右侧
+// (a b)
+// c (a b)
+// i = 0, e1 = -1, e2 = 0
+const prevChildren = [h("p", { key: "A" }, "A"), h("p", { key: "B" }, "B")];
+const nextChildren = [
+  h("p", { key: "C" }, "C"),
+  h("p", { key: "A" }, "A"),
+  h("p", { key: "B" }, "B"),
+];
+
+
 
 export default {
   name: 'ArrayToArray',
