@@ -116,7 +116,7 @@ export function createRender(options: any) {
         let n2 = c2[i];
         if (n2) {
           const position = i + 1;
-          const anchor = position > c2.length ? null : c2[position].el;
+          const anchor = position >= c2.length ? null : c2[position].el;
           patch(null, n2, container, parentComponent, anchor);
         } else {
           break;
