@@ -18,7 +18,7 @@ export function baseParse(content: string) {
 function parseChildren(context: ParseContext) {
   let nodes = [];
 
-  let node: any | undefined = {};
+  let node: any | undefined = undefined;
   let s = context.source;
   if (s.startsWith(openDelimiter)) {
     node = parseInterpolation(context);
@@ -28,9 +28,33 @@ function parseChildren(context: ParseContext) {
     }
   }
 
+  if (!node) {
+    node = parseText(context);
+  }
+
   nodes.push(node);
 
   return nodes;
+}
+
+function parseText(context: ParseContext) {
+  // 1. 获取content
+  const content = parseTextData(context, context.source.length);
+
+  console.log('parseText', context.source);
+
+  return {
+    type: NodeType.TEXT,
+    content
+  };
+}
+
+function parseTextData(context: ParseContext, length: number) {
+  const content = context.source.slice(0, length);
+
+  // 2. 推进
+  advanceBy(context, content.length);
+  return content;
 }
 
 function parseElement(context: ParseContext) {
@@ -49,7 +73,7 @@ function parseElement(context: ParseContext) {
 function parseTag(context: ParseContext, tagType: TagType) {
   let match = /^<\/?([a-z]*)/i.exec(context.source);
   if (!match) {
-    return {};
+    return undefined;
   }
   console.log('1. match ', context.source);
 
@@ -81,11 +105,11 @@ function parseInterpolation(context: ParseContext) {
   const rawContentLength = closeIndex - closeDelimiter.length;
 
   // 截取0-7：  message
-  const rawContent = context.source.slice(0, rawContentLength);
-  const content = rawContent.trim();
+  const rawContent = parseTextData(context, rawContentLength);
 
   // 推进
-  advanceBy(context, rawContentLength + closeDelimiter.length);
+  advanceBy(context, closeDelimiter.length);
+  const content = rawContent.trim();
   console.log(context.source, 'parseInterpolation --- close');
 
   return {
