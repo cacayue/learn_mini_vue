@@ -1,4 +1,5 @@
 import { NodeType, ParseContext } from './node';
+import { i } from '../../../../vue_sourcecode/vite/packages/vite/src/node/ssr/__tests__/ssrTransform.spec';
 
 const openDelimiter = '{{';
 const closeDelimiter = '}}';
@@ -50,14 +51,14 @@ function parseChildren(context: ParseContext, openTag: string) {
 
 function parseText(context: ParseContext) {
   let endIndex = context.source.length;
-  let endDelimiterTokenIndex = context.source.indexOf(openDelimiter);
-  let endTagTokenIndex = context.source.indexOf(startTag);
 
-  if (endDelimiterTokenIndex !== -1 || endTagTokenIndex !== -1) {
-    if (endDelimiterTokenIndex > endTagTokenIndex) {
-      endIndex = endTagTokenIndex;
-    } else {
-      endIndex = endDelimiterTokenIndex;
+  const endTokens = [openDelimiter, startTag];
+
+  for (let i = 0; i < endTokens.length; i++) {
+    const token = endTokens[i];
+    const index = context.source.indexOf(token);
+    if (index !== -1 && endIndex > index) {
+      endIndex = index;
     }
   }
 
