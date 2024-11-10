@@ -1,5 +1,8 @@
 import { NodeType, ParseContext } from './node';
 
+const openDelimiter = '{{';
+const closeDelimiter = '}}';
+
 export function baseParse(content: string) {
   const context = createParseContext(content);
 
@@ -9,6 +12,8 @@ export function baseParse(content: string) {
 function parseChildren(context: ParseContext) {
   let nodes = [];
 
+  if (context.source.startsWith(openDelimiter)) {
+  }
   let node = parseInterpolation(context);
 
   nodes.push(node);
@@ -18,9 +23,6 @@ function parseChildren(context: ParseContext) {
 
 function parseInterpolation(context: ParseContext) {
   // {{message}}
-
-  const openDelimiter = '{{';
-  const closeDelimiter = '}}';
 
   // 9
   const closeIndex = context.source.indexOf(closeDelimiter, openDelimiter.length);

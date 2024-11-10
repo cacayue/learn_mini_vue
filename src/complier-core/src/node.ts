@@ -4,5 +4,5 @@ export const enum NodeType {
 }
 
 export type ParseContext = {
-  source: any;
+  source: string;
 };
