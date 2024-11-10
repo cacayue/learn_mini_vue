@@ -12,13 +12,13 @@ const enum TagType {
 export function baseParse(content: string) {
   const context = createParseContext(content);
 
-  return createRoot(parseChildren(context));
+  return createRoot(parseChildren(context, ''));
 }
 
-function parseChildren(context: ParseContext) {
+function parseChildren(context: ParseContext, openTag: string) {
   let nodes = [];
 
-  while (!isEnd(context)) {
+  while (!isEnd(context, openTag)) {
     let node: any | undefined = undefined;
     let s = context.source.trim();
     if (s.startsWith(openDelimiter)) {
@@ -36,9 +36,9 @@ function parseChildren(context: ParseContext) {
     nodes.push(node);
   }
 
-  function isEnd(context: ParseContext) {
+  function isEnd(context: ParseContext, openTag: string) {
     context.source = context.source.trim();
-    if (context.source.startsWith('</div>')) {
+    if (context.source.startsWith(`</${openTag}>`)) {
       return true;
     }
 
@@ -79,7 +79,7 @@ function parseElement(context: ParseContext) {
   // 解析开始tag
   // 删除解析过的
   let element: any = parseTag(context, TagType.Start);
-  element.children = parseChildren(context);
+  element.children = parseChildren(context, element.tag);
 
   context.source = context.source.trim();
 
@@ -106,7 +106,7 @@ function parseTag(context: ParseContext, tagType: TagType) {
 
   return {
     type: NodeType.ELEMENT,
-    tag: tag
+    tag
   };
 }
 

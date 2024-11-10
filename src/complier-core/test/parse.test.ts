@@ -40,12 +40,12 @@ describe('parse', () => {
   });
 
   it('complete test', () => {
-    const message = '<div>hi, {{message}}</div>';
+    const message = '<p>hi, {{message}}</p>';
     const ast = baseParse(message);
 
     expect(ast.children[0]).toStrictEqual({
       type: NodeType.ELEMENT,
-      tag: 'div',
+      tag: 'p',
       children: [
         {
           type: NodeType.TEXT,
