@@ -13,10 +13,10 @@ function parseChildren(context: ParseContext) {
   let nodes = [];
 
   if (context.source.startsWith(openDelimiter)) {
-  }
-  let node = parseInterpolation(context);
+    let node = parseInterpolation(context);
 
-  nodes.push(node);
+    nodes.push(node);
+  }
 
   return nodes;
 }
