@@ -2,6 +2,12 @@ import { NodeType, ParseContext } from './node';
 
 const openDelimiter = '{{';
 const closeDelimiter = '}}';
+const startTag = '<';
+
+const enum TagType {
+  Start,
+  End
+}
 
 export function baseParse(content: string) {
   const context = createParseContext(content);
@@ -12,13 +18,54 @@ export function baseParse(content: string) {
 function parseChildren(context: ParseContext) {
   let nodes = [];
 
-  if (context.source.startsWith(openDelimiter)) {
-    let node = parseInterpolation(context);
-
-    nodes.push(node);
+  let node: any | undefined = {};
+  let s = context.source;
+  if (s.startsWith(openDelimiter)) {
+    node = parseInterpolation(context);
+  } else if (s[0] === startTag) {
+    if (/[a-z]/i.test(s[1])) {
+      node = parseElement(context);
+    }
   }
 
+  nodes.push(node);
+
   return nodes;
+}
+
+function parseElement(context: ParseContext) {
+  // <div></div>
+  // 解析开始tag
+  // 删除解析过的
+  let element = parseTag(context, TagType.Start);
+
+  // 再次解析结束tag
+  // 删除解析过的
+  parseTag(context, TagType.End);
+
+  return element;
+}
+
+function parseTag(context: ParseContext, tagType: TagType) {
+  let match = /^<\/?([a-z]*)/i.exec(context.source);
+  if (!match) {
+    return {};
+  }
+  console.log('1. match ', context.source);
+
+  let tag = match[1];
+  advanceBy(context, match[0].length);
+  advanceBy(context, 1);
+  console.log('2. advanceBy ', context.source);
+
+  if (tagType === TagType.End) {
+    return;
+  }
+
+  return {
+    type: NodeType.ELEMENT,
+    tag: tag
+  };
 }
 
 function parseInterpolation(context: ParseContext) {
@@ -39,7 +86,7 @@ function parseInterpolation(context: ParseContext) {
 
   // 推进
   advanceBy(context, rawContentLength + closeDelimiter.length);
-  console.log(context.source, 'close');
+  console.log(context.source, 'parseInterpolation --- close');
 
   return {
     type: NodeType.INTERPOLATION,

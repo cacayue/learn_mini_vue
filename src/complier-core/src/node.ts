@@ -1,6 +1,7 @@
 export const enum NodeType {
   INTERPOLATION,
-  SIMPLE_EXPRESSION
+  SIMPLE_EXPRESSION,
+  ELEMENT
 }
 
 export type ParseContext = {
