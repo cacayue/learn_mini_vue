@@ -186,14 +186,15 @@ export function createRender(options: any) {
       const sequences = getSequence(newIndexToOldIndexMap);
       // 稳定子序列的起始值
       let j = sequences.length - 1;
-      for (let i = newIndexToOldIndexMap.length - 1; i >= 0; i--) {
+      for (let i = toBePatched - 1; i >= 0; i--) {
         // 获取最长递增序列的值
         let seqIndex = sequences[j];
-        // 存储旧节点索引时加上了数组长度, 所以该处需要减去
-        let newChildIndex = newIndexToOldIndexMap[i] - s2;
+        let nextIndex = i + s2;
+        let nextChild = c2[nextIndex].el;
+        let anchor = nextIndex + 1 < l2 ? c2[nextIndex + 1].el : null;
         // 如果取得的值不在递增序列中则需要移动
-        if (newChildIndex !== seqIndex) {
-          console.log('需要移动');
+        if (i !== seqIndex) {
+          insert(nextChild, container, anchor);
         } else {
           j--;
         }
