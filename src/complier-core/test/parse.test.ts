@@ -38,4 +38,27 @@ describe('parse', () => {
       });
     });
   });
+
+  it('complete test', () => {
+    const message = '<div>hi, {{message}}</div>';
+    const ast = baseParse(message);
+
+    expect(ast.children[0]).toStrictEqual({
+      type: NodeType.ELEMENT,
+      tag: 'div',
+      children: [
+        {
+          type: NodeType.TEXT,
+          content: 'hi, '
+        },
+        {
+          type: NodeType.INTERPOLATION,
+          content: {
+            type: NodeType.SIMPLE_EXPRESSION,
+            content: 'message'
+          }
+        }
+      ]
+    });
+  });
 });

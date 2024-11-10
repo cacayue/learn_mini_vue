@@ -18,30 +18,46 @@ export function baseParse(content: string) {
 function parseChildren(context: ParseContext) {
   let nodes = [];
 
-  let node: any | undefined = undefined;
-  let s = context.source;
-  if (s.startsWith(openDelimiter)) {
-    node = parseInterpolation(context);
-  } else if (s[0] === startTag) {
-    if (/[a-z]/i.test(s[1])) {
-      node = parseElement(context);
+  while (!isEnd(context)) {
+    let node: any | undefined = undefined;
+    let s = context.source.trim();
+    if (s.startsWith(openDelimiter)) {
+      node = parseInterpolation(context);
+    } else if (s[0] === startTag) {
+      if (/[a-z]/i.test(s[1])) {
+        node = parseElement(context);
+      }
     }
+
+    if (!node) {
+      node = parseText(context);
+    }
+
+    nodes.push(node);
   }
 
-  if (!node) {
-    node = parseText(context);
-  }
+  function isEnd(context: ParseContext) {
+    context.source = context.source.trim();
+    if (context.source.startsWith('</div>')) {
+      return true;
+    }
 
-  nodes.push(node);
+    return !context.source;
+  }
 
   return nodes;
 }
 
 function parseText(context: ParseContext) {
-  // 1. 获取content
-  const content = parseTextData(context, context.source.length);
+  let endIndex = context.source.length;
+  let endTokenIndex = context.source.indexOf(openDelimiter);
 
-  console.log('parseText', context.source);
+  if (endTokenIndex !== -1) {
+    endIndex = endTokenIndex;
+  }
+
+  // 1. 获取content
+  const content = parseTextData(context, endIndex);
 
   return {
     type: NodeType.TEXT,
@@ -58,10 +74,14 @@ function parseTextData(context: ParseContext, length: number) {
 }
 
 function parseElement(context: ParseContext) {
+  context.source = context.source.trim();
   // <div></div>
   // 解析开始tag
   // 删除解析过的
-  let element = parseTag(context, TagType.Start);
+  let element: any = parseTag(context, TagType.Start);
+  element.children = parseChildren(context);
+
+  context.source = context.source.trim();
 
   // 再次解析结束tag
   // 删除解析过的
@@ -75,12 +95,10 @@ function parseTag(context: ParseContext, tagType: TagType) {
   if (!match) {
     return undefined;
   }
-  console.log('1. match ', context.source);
 
   let tag = match[1];
   advanceBy(context, match[0].length);
   advanceBy(context, 1);
-  console.log('2. advanceBy ', context.source);
 
   if (tagType === TagType.End) {
     return;
@@ -110,7 +128,6 @@ function parseInterpolation(context: ParseContext) {
   // 推进
   advanceBy(context, closeDelimiter.length);
   const content = rawContent.trim();
-  console.log(context.source, 'parseInterpolation --- close');
 
   return {
     type: NodeType.INTERPOLATION,
