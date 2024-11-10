@@ -15,13 +15,27 @@ describe('parse', () => {
       }
     });
   });
-  it('element', () => {
-    const message = '<div></div>';
-    const ast = baseParse(message);
+  describe('element', () => {
+    it('simple element a div', () => {
+      const message = '<div></div>';
+      const ast = baseParse(message);
 
-    expect(ast.children[0]).toStrictEqual({
-      type: NodeType.ELEMENT,
-      tag: 'div'
+      expect(ast.children[0]).toStrictEqual({
+        type: NodeType.ELEMENT,
+        tag: 'div'
+      });
+    });
+  });
+
+  describe('text', () => {
+    it('simple text', () => {
+      const message = '<div></div>';
+      const ast = baseParse(message);
+
+      expect(ast.children[0]).toStrictEqual({
+        type: NodeType.ELEMENT,
+        tag: 'div'
+      });
     });
   });
 });
