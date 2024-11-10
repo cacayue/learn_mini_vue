@@ -138,6 +138,11 @@ export function createRender(options: any) {
       let patched = 0;
       // 新数组需要遍历的节点数量
       let toBePatched = e2 - s2 + 1;
+      let newIndexToOldIndexMap = new Array(toBePatched);
+
+      for (let i = 0; i < toBePatched; i++) {
+        newIndexToOldIndexMap[i] = 0;
+      }
 
       // 循环新节点, 构建新节点映射 O(i)
       for (let i = s2; i <= e2; i++) {
@@ -167,8 +172,30 @@ export function createRender(options: any) {
         if (nextIndex === undefined) {
           remove(prevChildren.el);
         } else {
+          // 当老节点存在于新节点中, 构建新节点位置对应的老节点位置
+          // 1. 新节点需要从0开始计算
+          // 2. 由于0为需要插入的节点, 所以老节点索引默认加1
+          newIndexToOldIndexMap[nextIndex - s2] = i + 1;
+
           patch(prevChildren, c2[nextIndex], container, parentComponent, null);
           patched++;
+        }
+      }
+
+      // 获取最长递增子序列, 用于确定不稳定的值是哪些
+      const sequences = getSequence(newIndexToOldIndexMap);
+      // 稳定子序列的起始值
+      let j = 0;
+      for (let i = 0; i < newIndexToOldIndexMap.length; i++) {
+        // 获取最长递增序列的值
+        let seqIndex = sequences[j];
+        // 存储旧节点索引时加上了数组长度, 所以该处需要减去
+        let newChildIndex = newIndexToOldIndexMap[i] - s2;
+        // 如果取得的值不在递增序列中则需要移动
+        if (newChildIndex !== seqIndex) {
+          console.log('需要移动');
+        } else {
+          j++;
         }
       }
     }
@@ -266,4 +293,46 @@ export function createRender(options: any) {
   return {
     createApp: createAppAPI(render)
   };
+}
+
+/** 最长递增子序列, 为了Diff中获取最长的不需要移动的子序列 */
+function getSequence(arr: number[]): number[] {
+  const p = arr.slice();
+  const result = [0];
+  let i, j, u, v, c;
+  const len = arr.length;
+  for (i = 0; i < len; i++) {
+    const arrI = arr[i];
+    if (arrI !== 0) {
+      j = result[result.length - 1];
+      if (arr[j] < arrI) {
+        p[i] = j;
+        result.push(i);
+        continue;
+      }
+      u = 0;
+      v = result.length - 1;
+      while (u < v) {
+        c = (u + v) >> 1;
+        if (arr[result[c]] < arrI) {
+          u = c + 1;
+        } else {
+          v = c;
+        }
+      }
+      if (arrI < arr[result[u]]) {
+        if (u > 0) {
+          p[i] = result[u - 1];
+        }
+        result[u] = i;
+      }
+    }
+  }
+  u = result.length;
+  v = result[u - 1];
+  while (u-- > 0) {
+    result[u] = v;
+    v = p[v];
+  }
+  return result;
 }
