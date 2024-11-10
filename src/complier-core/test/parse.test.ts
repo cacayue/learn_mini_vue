@@ -15,4 +15,13 @@ describe('parse', () => {
       }
     });
   });
+  it('element', () => {
+    const message = '<div></div>';
+    const ast = baseParse(message);
+
+    expect(ast.children[0]).toStrictEqual({
+      type: NodeType.ELEMENT,
+      tag: 'div'
+    });
+  });
 });
