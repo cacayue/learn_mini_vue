@@ -39,9 +39,8 @@ function setupStatefulComponent(instance: any) {
   const { setup } = Component;
   if (setup) {
     setCurrentInstance(instance);
-    const setupResult = setup(shadowReadonly(props), {
-      emit
-    });
+    const setupContext = createSetupContext(instance);
+    const setupResult = setup(shadowReadonly(props), setupContext);
     setCurrentInstance(null);
     handleSetupResult(instance, setupResult);
   }
@@ -65,11 +64,21 @@ function finishComponentSetup(instance: any) {
   }
 }
 
-let currentINstance: any;
+let currentInstance: any = {};
 export function getCurrentInstance() {
-  return currentINstance;
+  return currentInstance;
 }
 
 function setCurrentInstance(instance: any) {
-  currentINstance = instance;
+  currentInstance = instance;
+}
+
+function createSetupContext(instance: any) {
+  console.log('初始化 setup context');
+  return {
+    attrs: instance.attrs,
+    slots: instance.slots,
+    emit: instance.emit,
+    expose: () => {} // TODO 实现 expose 函数逻辑
+  };
 }
