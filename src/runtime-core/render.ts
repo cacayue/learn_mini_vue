@@ -4,6 +4,7 @@ import { ShapeFlags } from '../Shared/shapeFlag';
 import { createComponentInstance, setupComponent } from './component';
 import { createAppAPI } from './createApp';
 import { shouldUpdateComponent } from './helper/updateComponentUtil';
+import { queueJob } from './scheduler';
 
 export const Fragment = Symbol('Fragment');
 export const Text = Symbol('Text');
@@ -49,6 +50,10 @@ export function createRender(options: any) {
   }
 
   function patchElement(n1: any, n2: any, container: any, parentComponent: any, anchor: any) {
+    console.log('patch element');
+    console.log(n1, 'n1');
+    console.log(n2, 'n2');
+
     let oldProps = n1.props || EMPTY_OBJ;
     let nextProps = n2.props || EMPTY_OBJ;
     let el = (n2.el = n1.el);
@@ -300,28 +305,35 @@ export function createRender(options: any) {
   }
 
   function setupRenderEffect(instance: any, vNode: any, container: any, anchor: any) {
-    instance.update = effect(() => {
-      if (instance.render) {
-        if (!instance.isMounted) {
-          const { proxy } = instance;
-          const subTree = (instance.subTree = instance.render.call(proxy));
-          patch(null, subTree, container, instance, anchor);
-          vNode.el = subTree.el;
-          instance.isMounted = true;
-        } else {
-          const { proxy, next, vNode } = instance;
-          if (next) {
-            next.el = vNode.el;
-            updateComponentPreRender(instance, next);
+    instance.update = effect(
+      () => {
+        if (instance.render) {
+          if (!instance.isMounted) {
+            const { proxy } = instance;
+            const subTree = (instance.subTree = instance.render.call(proxy));
+            patch(null, subTree, container, instance, anchor);
+            vNode.el = subTree.el;
+            instance.isMounted = true;
           } else {
+            const { proxy, next, vNode } = instance;
+            if (next) {
+              next.el = vNode.el;
+              updateComponentPreRender(instance, next);
+            } else {
+            }
+            const subTree = instance.render.call(proxy);
+            const prevSubTree = instance.subTree;
+            instance.subTree = subTree;
+            patch(prevSubTree, subTree, container, instance, anchor);
           }
-          const subTree = instance.render.call(proxy);
-          const prevSubTree = instance.subTree;
-          instance.subTree = subTree;
-          patch(prevSubTree, subTree, container, instance, anchor);
+        }
+      },
+      {
+        scheduler: () => {
+          queueJob(instance.update);
         }
       }
-    });
+    );
   }
 
   function updateComponentPreRender(instance: any, next: any) {
