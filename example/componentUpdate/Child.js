@@ -3,6 +3,6 @@ export default {
   name: "Child",
   setup() { },
   render() {
-    return h("div", {}, [h("div", {}, "child" + this.$props.msg)]);
+    return h("div", {}, [h("div", {}, "child - props -" + this.$props.msg)]);
   },
 };
