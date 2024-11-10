@@ -50,10 +50,15 @@ function parseChildren(context: ParseContext, openTag: string) {
 
 function parseText(context: ParseContext) {
   let endIndex = context.source.length;
-  let endTokenIndex = context.source.indexOf(openDelimiter);
+  let endDelimiterTokenIndex = context.source.indexOf(openDelimiter);
+  let endTagTokenIndex = context.source.indexOf(startTag);
 
-  if (endTokenIndex !== -1) {
-    endIndex = endTokenIndex;
+  if (endDelimiterTokenIndex !== -1 || endTagTokenIndex !== -1) {
+    if (endDelimiterTokenIndex > endTagTokenIndex) {
+      endIndex = endTagTokenIndex;
+    } else {
+      endIndex = endDelimiterTokenIndex;
+    }
   }
 
   // 1. 获取content

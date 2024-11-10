@@ -62,4 +62,33 @@ describe('parse', () => {
       ]
     });
   });
+
+  it('nested test', () => {
+    const message = '<div><p>hi, </p>{{message}}</div>';
+    const ast = baseParse(message);
+
+    expect(ast.children[0]).toStrictEqual({
+      type: NodeType.ELEMENT,
+      tag: 'div',
+      children: [
+        {
+          type: NodeType.ELEMENT,
+          tag: 'p',
+          children: [
+            {
+              type: NodeType.TEXT,
+              content: 'hi, '
+            }
+          ]
+        },
+        {
+          type: NodeType.INTERPOLATION,
+          content: {
+            type: NodeType.SIMPLE_EXPRESSION,
+            content: 'message'
+          }
+        }
+      ]
+    });
+  });
 });
