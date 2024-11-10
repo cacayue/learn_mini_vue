@@ -91,4 +91,11 @@ describe('parse', () => {
       ]
     });
   });
+
+  it('throw a error when lack tag', () => {
+    expect(() => {
+      const message = '<div><p>hi</div>';
+      const ast = baseParse(message);
+    }).toThrow();
+  });
 });

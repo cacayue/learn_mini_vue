@@ -1,5 +1,4 @@
 import { NodeType, ParseContext } from './node';
-import { i } from '../../../../vue_sourcecode/vite/packages/vite/src/node/ssr/__tests__/ssrTransform.spec';
 
 const openDelimiter = '{{';
 const closeDelimiter = '}}';
@@ -12,7 +11,7 @@ const enum TagType {
 
 export function baseParse(content: string) {
   const context = createParseContext(content);
-
+  validateAndGroupTags(context.source);
   return createRoot(parseChildren(context, ''));
 }
 
@@ -22,6 +21,7 @@ function parseChildren(context: ParseContext, openTag: string) {
   while (!isEnd(context, openTag)) {
     let node: any | undefined = undefined;
     let s = context.source.trim();
+
     if (s.startsWith(openDelimiter)) {
       node = parseInterpolation(context);
     } else if (s[0] === startTag) {
@@ -159,4 +159,30 @@ function createRoot(children: any[]) {
   return {
     children: children
   };
+}
+
+function validateAndGroupTags(htmlString: string) {
+  const regex = /<\/?[^>]+>/g;
+  const matches = htmlString.match(regex);
+
+  if (!matches) {
+    return;
+  }
+
+  const groupedByType = {
+    open: new Array<string>(),
+    close: new Array<string>()
+  };
+
+  matches.forEach((tag: string) => {
+    if (tag.startsWith('</')) {
+      groupedByType.close.push(tag);
+    } else {
+      groupedByType.open.push(tag);
+    }
+  });
+
+  if (groupedByType.open.length !== groupedByType.close.length) {
+    throw Error(`有未关闭的标签`);
+  }
 }
