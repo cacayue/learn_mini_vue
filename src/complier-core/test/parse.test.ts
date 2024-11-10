@@ -29,12 +29,12 @@ describe('parse', () => {
 
   describe('text', () => {
     it('simple text', () => {
-      const message = '<div></div>';
+      const message = 'some text';
       const ast = baseParse(message);
 
       expect(ast.children[0]).toStrictEqual({
-        type: NodeType.ELEMENT,
-        tag: 'div'
+        type: NodeType.TEXT,
+        content: message
       });
     });
   });
