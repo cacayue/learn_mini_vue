@@ -6,13 +6,17 @@ export default {
   name: "App",
   setup() {
     const msg = ref("123");
+    const count = ref(1);
     window.msg = msg
 
     const changeChildProps = () => {
       msg.value = "456";
     };
+    const changeCount = () => {
+      count.value += 1;
+    };
 
-    return { msg, changeChildProps };
+    return { msg, count, changeChildProps, changeCount };
   },
 
   render() {
@@ -28,6 +32,14 @@ export default {
       h(Child, {
         msg: this.msg,
       }),
+      h(
+        "button",
+        {
+          onClick: this.changeCount,
+        },
+        "change child props"
+      ),
+      h("p", {}, `count: ${this.count}`)
     ]);
   },
 };

@@ -6,6 +6,9 @@ const publicPropertiesMap = {
   },
   $slots: (i: any) => {
     return i.slots;
+  },
+  $props: (i: any) => {
+    return i.props;
   }
 };
 
