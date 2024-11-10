@@ -198,12 +198,14 @@ export function createRender(options: any) {
         // 获取最长递增序列的值
         let seqIndex = sequences[j];
         let nextIndex = i + s2;
-        let nextChild = c2[nextIndex].el;
+        let nextChild = c2[nextIndex];
         let anchor = nextIndex + 1 < l2 ? c2[nextIndex + 1].el : null;
-        if (moved) {
+        if (newIndexToOldIndexMap[i] === 0) {
+          patch(null, nextChild, container, parentComponent, anchor);
+        } else if (moved) {
           // 如果取得的值不在递增序列中则需要移动
           if (j < 0 || i !== seqIndex) {
-            insert(nextChild, container, anchor);
+            insert(nextChild.el, container, anchor);
           } else {
             j--;
           }
