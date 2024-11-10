@@ -88,6 +88,8 @@ export function createRender(options: any) {
     const l2 = c2.length;
     let e1 = c1.length - 1;
     let e2 = l2 - 1;
+    let maxNewIndexSoFar = 0;
+    let moved = false;
 
     while (i <= e1 && i <= e2) {
       let n1 = c1[i];
@@ -175,6 +177,11 @@ export function createRender(options: any) {
           // 当老节点存在于新节点中, 构建新节点位置对应的老节点位置
           // 1. 新节点需要从0开始计算
           // 2. 由于0为需要插入的节点, 所以老节点索引默认加1
+          if (nextIndex >= maxNewIndexSoFar) {
+            maxNewIndexSoFar = nextIndex;
+          } else {
+            moved = true;
+          }
           newIndexToOldIndexMap[nextIndex - s2] = i + 1;
 
           patch(prevChildren, c2[nextIndex], container, parentComponent, null);
@@ -183,7 +190,7 @@ export function createRender(options: any) {
       }
 
       // 获取最长递增子序列, 用于确定需要移动的值是哪些
-      const sequences = getSequence(newIndexToOldIndexMap);
+      const sequences = moved ? getSequence(newIndexToOldIndexMap) : [];
       // 稳定子序列的起始值
       let j = sequences.length - 1;
       for (let i = toBePatched - 1; i >= 0; i--) {
@@ -192,11 +199,13 @@ export function createRender(options: any) {
         let nextIndex = i + s2;
         let nextChild = c2[nextIndex].el;
         let anchor = nextIndex + 1 < l2 ? c2[nextIndex + 1].el : null;
-        // 如果取得的值不在递增序列中则需要移动
-        if (i !== seqIndex) {
-          insert(nextChild, container, anchor);
-        } else {
-          j--;
+        if (moved) {
+          // 如果取得的值不在递增序列中则需要移动
+          if (j < 0 || i !== seqIndex) {
+            insert(nextChild, container, anchor);
+          } else {
+            j--;
+          }
         }
       }
     }
