@@ -8,6 +8,7 @@ import { initSlots } from './componentSlots';
 export function createComponentInstance(vNode: any, parent: any) {
   let component: any = {
     vNode,
+    next: null,
     type: vNode.type,
     setupState: {},
     render: undefined,
@@ -18,7 +19,8 @@ export function createComponentInstance(vNode: any, parent: any) {
     provides: parent?.provides ?? {},
     parent: parent,
     isMounted: false,
-    subTree: {}
+    subTree: {},
+    update: () => {}
   };
   component.emit = emit.bind(null, component) as any;
 

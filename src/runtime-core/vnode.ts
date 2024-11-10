@@ -6,6 +6,7 @@ export function createVNode(type: any, props?: any, children?: any) {
     type,
     props,
     children,
+    component: null,
     $el: null,
     key: props?.key,
     shapeFlag: ShapeFlags.STATEFUL_COMPONENT

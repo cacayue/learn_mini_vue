@@ -3,6 +3,7 @@ import { EMPTY_OBJ, hasOwn } from '../Shared/index';
 import { ShapeFlags } from '../Shared/shapeFlag';
 import { createComponentInstance, setupComponent } from './component';
 import { createAppAPI } from './createApp';
+import { shouldUpdateComponent } from './helper/updateComponentUtil';
 
 export const Fragment = Symbol('Fragment');
 export const Text = Symbol('Text');
@@ -25,7 +26,7 @@ export function createRender(options: any) {
     } else if (shapeFlag & ShapeFlags.ELEMENT) {
       processElementComponent(n1, n2, container, parentComponent, anchor);
     } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
-      processComponent(n2, container, parentComponent, anchor);
+      processComponent(n1, n2, container, parentComponent, anchor);
     }
   }
 
@@ -273,18 +274,33 @@ export function createRender(options: any) {
     insert(el, container, anchor);
   }
 
-  function processComponent(vNode: any, container: any, parentComponent: any, anchor: any) {
-    mountComponent(vNode, container, parentComponent, anchor);
+  function processComponent(n1: any, n2: any, container: any, parentComponent: any, anchor: any) {
+    if (!n1) {
+      mountComponent(n2, container, parentComponent, anchor);
+    } else {
+      updateComponent(n1, n2);
+    }
+  }
+
+  function updateComponent(n1: any, n2: any) {
+    const instance = (n2.component = n1.component);
+    if (shouldUpdateComponent(n1, n2)) {
+      instance.next = n2;
+      instance.update();
+    } else {
+      n2.el = n1.el;
+      instance.vNode = n2;
+    }
   }
 
   function mountComponent(vNode: any, container: any, parentComponent: any, anchor: any) {
-    var instance = createComponentInstance(vNode, parentComponent);
+    var instance = (vNode.component = createComponentInstance(vNode, parentComponent));
     setupComponent(instance);
     setupRenderEffect(instance, vNode, container, anchor);
   }
 
   function setupRenderEffect(instance: any, vNode: any, container: any, anchor: any) {
-    effect(() => {
+    instance.update = effect(() => {
       if (instance.render) {
         if (!instance.isMounted) {
           const { proxy } = instance;
@@ -293,7 +309,12 @@ export function createRender(options: any) {
           vNode.el = subTree.el;
           instance.isMounted = true;
         } else {
-          const { proxy } = instance;
+          const { proxy, next, vNode } = instance;
+          if (next) {
+            next.el = vNode.el;
+            updateComponentPreRender(instance, next);
+          } else {
+          }
           const subTree = instance.render.call(proxy);
           const prevSubTree = instance.subTree;
           instance.subTree = subTree;
@@ -301,6 +322,13 @@ export function createRender(options: any) {
         }
       }
     });
+  }
+
+  function updateComponentPreRender(instance: any, next: any) {
+    instance.vNode = next;
+    instance.next = null;
+
+    instance.props = next.props;
   }
 
   return {
