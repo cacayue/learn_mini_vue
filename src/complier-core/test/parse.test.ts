@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { baseParse } from '../src/parse';
+import { NodeType } from '../src/node';
 
 describe('parse', () => {
   it('interpolation', () => {
@@ -7,9 +8,9 @@ describe('parse', () => {
     const ast = baseParse(message);
 
     expect(ast.children[0]).toStrictEqual({
-      type: 'interpolation',
+      type: NodeType.INTERPOLATION,
       content: {
-        type: 'simple_expression',
+        type: NodeType.SIMPLE_EXPRESSION,
         content: 'message'
       }
     });
