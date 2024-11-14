@@ -1,5 +1,3 @@
-import { NodeType } from './node';
-
 export type TransformOptions = {
   nodeTransforms: Array<Function>;
 };
@@ -9,10 +7,17 @@ export type TransformContext = {
   nodeTransforms: Array<Function>;
 };
 
-export function transform(root: any, options: TransformOptions) {
+export function transform(root: any, options?: TransformOptions) {
   const context = createTraverseContext(root, options);
   traverseNode(root, context);
+
+  createRootCodegen(root);
 }
+
+function createRootCodegen(root: any) {
+  root.codeGenNode = root.children[0];
+}
+
 function traverseNode(node: any, context: TransformContext) {
   let children = node.children;
 
@@ -31,10 +36,10 @@ function traverseNode(node: any, context: TransformContext) {
     }
   }
 }
-function createTraverseContext(root: any, options: TransformOptions): TransformContext {
+function createTraverseContext(root: any, options?: TransformOptions): TransformContext {
   let context: TransformContext = {
     root,
-    nodeTransforms: options.nodeTransforms || []
+    nodeTransforms: options?.nodeTransforms || []
   };
 
   return context;
