@@ -27,10 +27,9 @@ function createRootCodegen(root: any) {
 
 function traverseNode(node: any, context: TransformContext) {
   const transforms = context.nodeTransforms;
-
   for (let i = 0; i < transforms.length; i++) {
     const transform = transforms[i];
-    transform(node);
+    transform(node, context);
   }
 
   switch (node.type) {

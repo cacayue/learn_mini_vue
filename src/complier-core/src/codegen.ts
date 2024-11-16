@@ -1,4 +1,4 @@
-import { helperNameMap, TO_DISPLAY_STRING } from './complierHelper';
+import { CREATE_ELEMENT_BLOCK, helperNameMap, TO_DISPLAY_STRING } from './complierHelper';
 import { NodeType } from './node';
 
 export function generateCode(ast: any) {
@@ -58,9 +58,23 @@ function genNode(node: any, context: any) {
     case NodeType.SIMPLE_EXPRESSION:
       genExpression(node, context);
       break;
+    case NodeType.ELEMENT:
+      genElement(node, context);
+      break;
     default:
       break;
   }
+}
+
+function genElement(node: any, context: any) {
+  const { push, helper } = context;
+  console.log(node.content);
+  push(`${helper(CREATE_ELEMENT_BLOCK)}(`);
+  push(`${node.tag}`);
+  for (const child in node.children) {
+    genNode(child, context);
+  }
+  push(`)`);
 }
 
 function genText(node: any, context: any) {
