@@ -11,6 +11,7 @@ export function generateCode(ast: any) {
   const node = ast.codeGenNode;
   push(`function ${functionName}(${signature}) {`);
 
+  push(`return `);
   genNode(node, context);
 
   push(`}`);
@@ -47,7 +48,7 @@ function createContext() {
 
 function genNode(node: any, context: any) {
   const { push } = context;
-  push(`return `);
+
   switch (node.type) {
     case NodeType.TEXT:
       genText(node, context);
@@ -68,23 +69,35 @@ function genNode(node: any, context: any) {
 
 function genElement(node: any, context: any) {
   const { push, helper } = context;
-  console.log(node.content);
   push(`${helper(CREATE_ELEMENT_BLOCK)}(`);
   push(`${node.tag}`);
-  for (const child in node.children) {
-    genNode(child, context);
-  }
+  genNodeChildren(node, context);
   push(`)`);
+}
+
+function genNodeChildren(node: any, context: any) {
+  const { push } = context;
+  if (node.children.length > 0) {
+    push(`,null,`);
+    for (let i = 0; i < node.children.length; i++) {
+      const child = node.children[i];
+      console.log(child, 'child');
+      genNode(child, context);
+      if (i + 1 < node.children.length) {
+        push(` + `);
+      }
+    }
+    push(`, 1 /* TEXT */`);
+  }
 }
 
 function genText(node: any, context: any) {
   const { push } = context;
-  push(`${node.content}`);
+  push(`"${node.content}"`);
 }
 
 function genInterpolation(node: any, context: any) {
   const { push, helper } = context;
-  console.log(node.content);
   push(`${helper(TO_DISPLAY_STRING)}(`);
   genNode(node.content, context);
   push(`)`);
