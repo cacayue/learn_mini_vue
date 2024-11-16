@@ -1,5 +1,10 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`codegen > complex  1`] = `
+"import { createElementBlock as _createElementBlock,toDisplayString as _toDisplayString } from 'vue'
+return function render(_ctx, _cache) {return _createElementBlock(div,null,"hi, " + _toDisplayString(_ctx.message), 1 /* TEXT */)}"
+`;
+
 exports[`codegen > element 1`] = `
 "import { createElementBlock as _createElementBlock } from 'vue'
 return function render(_ctx, _cache) {return _createElementBlock(div)}"
@@ -7,7 +12,7 @@ return function render(_ctx, _cache) {return _createElementBlock(div)}"
 
 exports[`codegen > interpolation 1`] = `
 "import { toDisplayString as _toDisplayString } from 'vue'
-return function render(_ctx, _cache) {return _toDisplayString(return _ctx.message)}"
+return function render(_ctx, _cache) {return _toDisplayString(_ctx.message)}"
 `;
 
-exports[`codegen > string 1`] = `"return function render(_ctx, _cache) {return hi}"`;
+exports[`codegen > string 1`] = `"return function render(_ctx, _cache) {return "hi"}"`;

@@ -33,4 +33,14 @@ describe('codegen', () => {
 
     expect(code).toMatchSnapshot();
   });
+
+  it('complex ', () => {
+    const ast = baseParse('<div>hi, {{message}}</div>');
+    transform(ast, {
+      nodeTransforms: [transformExpression, transformElement]
+    });
+    const { code } = generateCode(ast);
+
+    expect(code).toMatchSnapshot();
+  });
 });
