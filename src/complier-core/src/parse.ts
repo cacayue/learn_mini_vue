@@ -157,7 +157,8 @@ function createParseContext(content: string): ParseContext {
 
 function createRoot(children: any[]) {
   return {
-    children: children
+    children: children,
+    type: NodeType.ROOT
   };
 }
 
